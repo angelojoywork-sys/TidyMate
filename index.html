@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>TidyMate</title>
 <meta name="description" content="Shared chores for housemates. No account, no download.">
-<meta name="theme-color" content="#F6F5F1" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#141513" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#FFFFFF">
+<meta name="color-scheme" content="light">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="TidyMate">
@@ -14,14 +14,10 @@
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <style>
 :root{
-  --bg:#F6F5F1; --card:#FFFFFF; --ink:#1A1B18; --muted:#6B6D66; --line:#E4E2DA;
+  color-scheme:light;
+  --bg:#FFFFFF; --card:#FFFFFF; --ink:#1A1B18; --muted:#676962; --line:#E7E5DF;
   --accent:#2C6A4F; --accent-ink:#FFFFFF; --soft:#E7EFE9; --warn:#B0432A; --warn-soft:#F7E6E0;
   --shadow:0 1px 2px rgba(20,20,15,.05),0 8px 24px rgba(20,20,15,.06);
-}
-@media (prefers-color-scheme: dark){
-  :root{ --bg:#141513; --card:#1E201D; --ink:#EEEDE8; --muted:#9A9C94; --line:#2E302C;
-    --accent:#6FBF98; --accent-ink:#0F1F17; --soft:#22302A; --warn:#E58A70; --warn-soft:#3A241E;
-    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35); }
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%}
@@ -47,9 +43,9 @@ p.lead{color:var(--muted);margin-top:8px}
 .rowmain .m{display:block;font-size:13px;color:var(--muted)}
 .rowmain .m.warn{color:var(--warn)}
 .av{flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:700;color:#fff}
-.seg{display:inline-flex;background:var(--line);border-radius:999px;padding:3px;margin-top:16px}
+.seg{display:inline-flex;background:#F0EEE9;border-radius:999px;padding:3px;margin-top:16px}
 .seg button{padding:7px 16px;border-radius:999px;font-size:14px;font-weight:600;color:var(--muted)}
-.seg button[aria-pressed=true]{background:var(--card);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.seg button[aria-pressed=true]{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
 .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:50px;padding:12px 18px;border-radius:14px;font-weight:650;background:var(--accent);color:var(--accent-ink)}
 .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
 .btn.danger{background:transparent;color:var(--warn)}
@@ -105,7 +101,10 @@ nav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;st
 #toast button{color:inherit;font-weight:700;text-decoration:underline;padding:4px 10px}
 .logo{width:52px;height:52px;border-radius:14px;background:var(--accent);display:grid;place-items:center;margin-bottom:20px}
 .logo svg{width:28px;height:28px;stroke:var(--accent-ink);fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
-.onb{padding-top:8vh}
+.onb{padding-top:6vh}
+.brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:16px;letter-spacing:-.01em;margin-bottom:22px}
+.brand i{width:26px;height:26px;border-radius:8px;background:var(--accent);display:grid;place-items:center}
+.brand svg{width:15px;height:15px;stroke:#fff;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
 .dots{display:flex;gap:6px;margin-bottom:24px}
 .dots i{width:22px;height:4px;border-radius:2px;background:var(--line)}
 .dots i.on{background:var(--accent)}
@@ -119,12 +118,12 @@ nav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;st
 'use strict';
 var KEY='tidymate.v1';
 var COLORS=['#2C6A4F','#B5653A','#4A6FA5','#8A5A9E','#A8873A','#3F8C8C','#B24C63','#5E6B3A'];
-var STARTERS=['Take out bins','Dishes','Vacuum','Clean bathroom','Wipe kitchen','Water plants','Laundry','Mop floors'];
+var STARTERS=['Vacuum the house','Clean washroom','Clean fridge','Take out bins','Wipe kitchen','Mop floors','Laundry','Water plants'];
 var REPEATS=[[0,'Once'],[7,'Weekly'],[14,'Every 2 weeks'],[30,'Monthly']];
 var $app=document.getElementById('app'), $toast=document.getElementById('toast');
 var state=load(), pending=null, undoSnap=null, toastTimer=null;
 var ui={tab:'today',filter:'all',sheet:null,step:0,draft:null,
-  onb:{home:'',me:'',mates:[],starters:STARTERS.slice(0,4)}};
+  onb:{home:'House',me:'',mates:[],starters:STARTERS.slice(0,3)}};
 
 /* ---------- helpers ---------- */
 function uid(){return Math.random().toString(36).slice(2,9)}
@@ -193,15 +192,16 @@ function render(){
   if(pending)html=viewJoin();
   else if(!state)html=viewOnboard();
   else html=(ui.tab==='today'?viewToday():ui.tab==='log'?viewLog():viewHome())+navBar()+(ui.sheet?viewSheet():'');
-  $app.innerHTML=html;
+  $app.innerHTML=BRAND+html;
 }
-var LOGO='<div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>';
+var LOGO='';
+var BRAND='<div class="brand"><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i>TidyMate</div>';
 
 function viewOnboard(){
   var o=ui.onb, s=ui.step, dots='<div class="dots" aria-hidden="true">'+[0,1,2].map(function(i){return '<i class="'+(i<=s?'on':'')+'"></i>'}).join('')+'</div>';
   if(s===0)return '<section class="onb">'+LOGO+dots+'<h1>Chores, shared.<br>No sign-up.</h1><p class="lead">Set up your home in under a minute, then send housemates one link.</p>'+
-    '<form data-f="onb0"><label class="f" for="home">What do you call your place?</label><input class="text" id="home" name="home" maxlength="40" placeholder="e.g. Flat 4B" value="'+esc(o.home)+'" autocomplete="off" required>'+
-    '<label class="f" for="me">Your first name</label><input class="text" id="me" name="me" maxlength="24" placeholder="e.g. Sam" value="'+esc(o.me)+'" autocomplete="given-name" required>'+
+    '<form data-f="onb0"><label class="f" for="home">What do you call your place?</label><input class="text" id="home" name="home" maxlength="40" placeholder="e.g. House" value="'+esc(o.home)+'" autocomplete="off" required>'+
+    '<label class="f" for="me">Your first name</label><input class="text" id="me" name="me" maxlength="24" placeholder="e.g. Alex" value="'+esc(o.me)+'" autocomplete="given-name" required>'+
     '<div style="margin-top:24px"><button class="btn">Continue</button></div></form></section>';
   if(s===1)return '<section class="onb">'+dots+'<h1>Who lives with you?</h1><p class="lead">First names only. You can add or change people later.</p>'+
     '<form data-f="mate" class="inline" style="margin-top:20px"><input class="text" name="name" maxlength="24" placeholder="Add a housemate" autocomplete="off" aria-label="Housemate name"><button class="btn ghost">Add</button></form>'+
@@ -281,7 +281,7 @@ function viewSheet(){
   var head=function(t){return '<div class="grab"></div><div class="sheethead"><h3>'+t+'</h3><button class="x" data-a="close" aria-label="Close">✕</button></div>'};
   if(s.type==='add'){
     var d=ui.draft;
-    inner=head('New chore')+'<form data-f="add"><label class="f" for="title">What needs doing?</label><input class="text" id="title" name="title" data-c="title" maxlength="60" placeholder="e.g. Take out bins" value="'+esc(d.title)+'" autocomplete="off" required>'+
+    inner=head('New chore')+'<form data-f="add"><label class="f" for="title">What needs doing?</label><input class="text" id="title" name="title" data-c="title" maxlength="60" placeholder="e.g. Vacuum the house" value="'+esc(d.title)+'" autocomplete="off" required>'+
       '<div class="chips" style="margin-top:10px">'+STARTERS.slice(0,5).map(function(t){return '<button type="button" class="chip" data-a="suggest" data-id="'+esc(t)+'">'+esc(t)+'</button>'}).join('')+'</div>'+
       fields(d)+'<div style="margin-top:24px"><button class="btn">Add chore</button></div></form>';
   }else if(s.type==='chore'){
@@ -350,7 +350,7 @@ var A={
   'rm-member':function(id){var m=member(id); if(!window.confirm('Remove '+m.name+'? Their chores move to you.'))return;
     state.chores.forEach(function(c){if(c.who===id)c.who=state.me}); state.members=state.members.filter(function(x){return x.id!==id}); save(); render()},
   reset:function(){if(!window.confirm('Erase this home and all chores from this device? This cannot be undone.'))return;
-    try{localStorage.removeItem(KEY)}catch(e){} state=null; ui.step=0; ui.tab='today'; ui.sheet=null; ui.onb={home:'',me:'',mates:[],starters:STARTERS.slice(0,4)}; render()}
+    try{localStorage.removeItem(KEY)}catch(e){} state=null; ui.step=0; ui.tab='today'; ui.sheet=null; ui.onb={home:'House',me:'',mates:[],starters:STARTERS.slice(0,3)}; render()}
 };
 var F={
   onb0:function(d){ui.onb.home=clean(d.home,40); ui.onb.me=clean(d.me,24); if(ui.onb.home&&ui.onb.me){ui.step=1; render()}},
