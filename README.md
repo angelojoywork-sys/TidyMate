@@ -18,6 +18,12 @@ An interactive prototype built for user testing: one mobile-first web app that r
 - **One primary action per screen.** Chores, Activity, Home. Nothing else.
 - **Privacy by default.** No tracking, analytics, ads, or server. Data is stored only in the browser (`localStorage`). An invite link carries a copy of the chores and first names in the URL fragment, which browsers do not send to any server.
 
+- **The handoff is the hook.** Ticking a chore off plays a tick animation, names who is up next, and offers one tap to tell them. The app does the reminding so housemates don't have to.
+- **One shared streak, no leaderboard.** The house keeps a single count of chores finished on time in a row. Everyone protects the same number, so nobody gets ranked or shamed.
+- **Up to 4 people per house** for this test round.
+
+The mascot image is a low-resolution stand-in cropped from a design mockup and should be replaced with the exported artwork. Type is Bricolage Grotesque (SIL Open Font License), self-hosted so no font request leaves the site.
+
 ## Known limits of this prototype
 
 - Each device keeps its own copy. Changes do not sync live; re-sending the invite link shares an update.
