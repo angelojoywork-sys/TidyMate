@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TidyMate</title>
+<meta name="description" content="Shared chores for housemates. No account, no download.">
+<meta name="theme-color" content="#F6F5F1" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141513" media="(prefers-color-scheme: dark)">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="TidyMate">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<style>
+:root{
+  --bg:#F6F5F1; --card:#FFFFFF; --ink:#1A1B18; --muted:#6B6D66; --line:#E4E2DA;
+  --accent:#2C6A4F; --accent-ink:#FFFFFF; --soft:#E7EFE9; --warn:#B0432A; --warn-soft:#F7E6E0;
+  --shadow:0 1px 2px rgba(20,20,15,.05),0 8px 24px rgba(20,20,15,.06);
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#141513; --card:#1E201D; --ink:#EEEDE8; --muted:#9A9C94; --line:#2E302C;
+    --accent:#6FBF98; --accent-ink:#0F1F17; --soft:#22302A; --warn:#E58A70; --warn-soft:#3A241E;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35); }
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+button,input{font:inherit;color:inherit}
+button{background:none;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+#app{max-width:520px;margin:0 auto;min-height:100dvh;padding:24px 16px calc(150px + env(safe-area-inset-bottom))}
+.eyebrow{color:var(--muted);font-size:13px;letter-spacing:.02em}
+h1{font-size:30px;line-height:1.15;letter-spacing:-.02em;font-weight:700;margin-top:2px}
+h2{font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:28px 4px 8px}
+h2.warn{color:var(--warn)}
+p.lead{color:var(--muted);margin-top:8px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.pad{padding:16px}
+.row{display:flex;align-items:center;gap:4px;padding:4px 12px 4px 4px;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.check{flex:none;width:48px;height:48px;display:grid;place-items:center}
+.check i{width:24px;height:24px;border-radius:50%;border:2px solid var(--muted);display:block;transition:.15s}
+.check:hover i,.check:active i{border-color:var(--accent);background:var(--soft)}
+.rowmain{flex:1;min-width:0;text-align:left;padding:10px 4px;display:block}
+.rowmain .t{display:block;font-weight:600;overflow-wrap:anywhere}
+.rowmain .m{display:block;font-size:13px;color:var(--muted)}
+.rowmain .m.warn{color:var(--warn)}
+.av{flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:700;color:#fff}
+.seg{display:inline-flex;background:var(--line);border-radius:999px;padding:3px;margin-top:16px}
+.seg button{padding:7px 16px;border-radius:999px;font-size:14px;font-weight:600;color:var(--muted)}
+.seg button[aria-pressed=true]{background:var(--card);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:50px;padding:12px 18px;border-radius:14px;font-weight:650;background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.danger{background:transparent;color:var(--warn)}
+.btn:active{transform:scale(.99)}
+.stack>*+*{margin-top:10px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{min-height:40px;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:14px;font-weight:550;display:inline-flex;align-items:center;gap:6px}
+.chip[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip input[type=date]{border:0;background:none;font-size:14px;min-width:0;color:inherit}
+label.f{display:block;font-size:13px;font-weight:600;color:var(--muted);margin:18px 2px 8px}
+input.text{width:100%;min-height:50px;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--card);font-size:16px}
+input.text::placeholder{color:var(--muted)}
+.inline{display:flex;gap:8px}
+.inline .btn{width:auto;flex:none}
+.fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(76px + env(safe-area-inset-bottom));width:min(488px,calc(100% - 32px));box-shadow:var(--shadow);z-index:5}
+nav{position:fixed;left:0;right:0;bottom:0;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);z-index:6}
+nav div{max-width:520px;margin:0 auto;display:flex}
+nav button{flex:1;min-height:60px;font-size:12px;font-weight:600;color:var(--muted);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
+nav button[aria-current=page]{color:var(--accent)}
+nav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.empty{text-align:center;color:var(--muted);padding:48px 16px}
+.empty b{display:block;color:var(--ink);font-size:18px;margin-bottom:4px}
+.backdrop{position:fixed;inset:0;background:rgba(10,10,8,.4);z-index:10;display:flex;align-items:flex-end;justify-content:center;animation:fade .15s}
+.sheet{background:var(--bg);width:100%;max-width:520px;max-height:92dvh;overflow:auto;border-radius:22px 22px 0 0;padding:10px 16px calc(20px + env(safe-area-inset-bottom));animation:up .22s cubic-bezier(.2,.8,.2,1)}
+.sheet .grab{width:40px;height:4px;border-radius:2px;background:var(--line);margin:0 auto 12px}
+.sheet h3{font-size:20px;letter-spacing:-.01em}
+.sheethead{display:flex;justify-content:space-between;align-items:center}
+.x{width:44px;height:44px;margin-right:-10px;font-size:22px;color:var(--muted)}
+@media(min-width:600px){.backdrop{align-items:center}.sheet{border-radius:22px}}
+@keyframes up{from{transform:translateY(24px);opacity:0}}
+@keyframes fade{from{opacity:0}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.log{display:flex;gap:12px;align-items:center;padding:12px 14px;border-top:1px solid var(--line)}
+.log:first-child{border-top:0}
+.log .m{font-size:13px;color:var(--muted)}
+.member{display:flex;align-items:center;gap:12px;padding:10px 14px;border-top:1px solid var(--line);min-height:56px}
+.member:first-child{border-top:0}
+.member span.n{flex:1;font-weight:600;overflow-wrap:anywhere}
+.tag{font-size:12px;color:var(--muted);font-weight:500;margin-left:6px}
+.link{color:var(--muted);font-size:14px;text-decoration:underline;padding:10px}
+.note{font-size:14px;color:var(--muted)}
+.note b{color:var(--ink)}
+.note li{margin:6px 0 0 18px}
+.switch{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:var(--card);width:100%;text-align:left}
+.switch small{display:block;color:var(--muted);font-size:13px}
+.switch i{flex:none;width:44px;height:26px;border-radius:13px;background:var(--line);position:relative;transition:.15s}
+.switch i:after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.15s}
+.switch[aria-pressed=true] i{background:var(--accent)}
+.switch[aria-pressed=true] i:after{left:21px}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(140px + env(safe-area-inset-bottom));background:var(--ink);color:var(--bg);padding:10px 8px 10px 16px;border-radius:999px;font-size:14px;font-weight:550;display:none;align-items:center;gap:6px;z-index:20;box-shadow:var(--shadow);max-width:calc(100% - 32px)}
+#toast.on{display:flex}
+#toast span{padding-right:8px}
+#toast button{color:inherit;font-weight:700;text-decoration:underline;padding:4px 10px}
+.logo{width:52px;height:52px;border-radius:14px;background:var(--accent);display:grid;place-items:center;margin-bottom:20px}
+.logo svg{width:28px;height:28px;stroke:var(--accent-ink);fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.onb{padding-top:8vh}
+.dots{display:flex;gap:6px;margin-bottom:24px}
+.dots i{width:22px;height:4px;border-radius:2px;background:var(--line)}
+.dots i.on{background:var(--accent)}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<div id="toast" role="status" aria-live="polite"></div>
+<script>
+(function(){
+'use strict';
+var KEY='tidymate.v1';
+var COLORS=['#2C6A4F','#B5653A','#4A6FA5','#8A5A9E','#A8873A','#3F8C8C','#B24C63','#5E6B3A'];
+var STARTERS=['Take out bins','Dishes','Vacuum','Clean bathroom','Wipe kitchen','Water plants','Laundry','Mop floors'];
+var REPEATS=[[0,'Once'],[7,'Weekly'],[14,'Every 2 weeks'],[30,'Monthly']];
+var $app=document.getElementById('app'), $toast=document.getElementById('toast');
+var state=load(), pending=null, undoSnap=null, toastTimer=null;
+var ui={tab:'today',filter:'all',sheet:null,step:0,draft:null,
+  onb:{home:'',me:'',mates:[],starters:STARTERS.slice(0,4)}};
+
+/* ---------- helpers ---------- */
+function uid(){return Math.random().toString(36).slice(2,9)}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function iso(d){return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10)}
+function today(){return iso(new Date())}
+function noon(s){return new Date(s+'T12:00:00')}
+function addDays(s,n){var d=noon(s);d.setDate(d.getDate()+n);return iso(d)}
+function diff(s){return Math.round((noon(s)-noon(today()))/864e5)}
+function saturday(){var n=(6-new Date().getDay()+7)%7;return addDays(today(),n||7)}
+function fmt(s,o){return noon(s).toLocaleDateString(undefined,o)}
+function dueLabel(s){var n=diff(s);
+  if(n<-1)return (-n)+' days overdue'; if(n===-1)return 'Due yesterday';
+  if(n===0)return 'Today'; if(n===1)return 'Tomorrow';
+  if(n<7)return fmt(s,{weekday:'long'}); return fmt(s,{weekday:'short',day:'numeric',month:'short'})}
+function ago(t){var m=Math.round((Date.now()-t)/6e4);
+  if(m<1)return 'just now'; if(m<60)return m+' min ago'; var h=Math.round(m/60);
+  if(h<24)return h+' h ago'; var d=Math.round(h/24); if(d===1)return 'yesterday';
+  return new Date(t).toLocaleDateString(undefined,{day:'numeric',month:'short'})}
+function repeatLabel(n){for(var i=0;i<REPEATS.length;i++)if(REPEATS[i][0]===n)return REPEATS[i][1];return 'Once'}
+function member(id){for(var i=0;i<state.members.length;i++)if(state.members[i].id===id)return state.members[i];return{id:'',name:'Someone'}}
+function memberIdx(id){for(var i=0;i<state.members.length;i++)if(state.members[i].id===id)return i;return 0}
+function chore(id){for(var i=0;i<state.chores.length;i++)if(state.chores[i].id===id)return state.chores[i];return null}
+function avatar(id){var m=member(id);return '<span class="av" style="background:'+COLORS[memberIdx(id)%COLORS.length]+'" title="'+esc(m.name)+'" aria-label="'+esc(m.name)+'">'+esc((m.name||'?').charAt(0).toUpperCase())+'</span>'}
+function clean(s,n){return String(s==null?'':s).trim().slice(0,n||40)}
+
+/* ---------- storage ---------- */
+function load(){try{var s=JSON.parse(localStorage.getItem(KEY));return valid(s)?s:null}catch(e){return null}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+function valid(s){return !!(s&&typeof s.home==='string'&&Array.isArray(s.members)&&s.members.length&&Array.isArray(s.chores))}
+
+/* ---------- invite links (a snapshot of the home, carried in the URL) ---------- */
+function enc(o){return btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
+function dec(s){return JSON.parse(decodeURIComponent(escape(atob(s.replace(/-/g,'+').replace(/_/g,'/')))))}
+function inviteLink(){
+  return location.origin+location.pathname+'#join='+enc({id:state.id,home:state.home,members:state.members,chores:state.chores});
+}
+function readInvite(){
+  var h=location.hash; if(h.indexOf('#join=')!==0)return null;
+  try{
+    var o=dec(h.slice(6)); if(!valid(o))return null;
+    return {v:1,id:clean(o.id,20)||uid(),home:clean(o.home,40)||'Home',me:null,log:[],
+      members:o.members.slice(0,12).map(function(m){return{id:clean(m.id,20)||uid(),name:clean(m.name,24)||'Housemate'}}),
+      chores:o.chores.slice(0,60).map(function(c){return{id:clean(c.id,20)||uid(),title:clean(c.title,60)||'Chore',who:clean(c.who,20),
+        due:/^\d{4}-\d\d-\d\d$/.test(c.due)?c.due:today(),repeat:[0,7,14,30].indexOf(c.repeat)>-1?c.repeat:0,rotate:!!c.rotate}})};
+  }catch(e){return null}
+}
+function share(text,url){
+  if(navigator.share){navigator.share({text:text,url:url}).catch(function(){});return}
+  var full=text+' '+url;
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(full).then(function(){toast('Copied. Paste it into your group chat.')},function(){window.prompt('Copy this message:',full)});
+  }else window.prompt('Copy this message:',full);
+}
+
+/* ---------- toast ---------- */
+function toast(msg,undo){
+  $toast.innerHTML='<span>'+esc(msg)+'</span>'+(undo?'<button data-a="undo">Undo</button>':'');
+  $toast.className='on'; clearTimeout(toastTimer);
+  toastTimer=setTimeout(function(){$toast.className='';undoSnap=null},5000);
+}
+
+/* ---------- views ---------- */
+function render(){
+  var html;
+  if(pending)html=viewJoin();
+  else if(!state)html=viewOnboard();
+  else html=(ui.tab==='today'?viewToday():ui.tab==='log'?viewLog():viewHome())+navBar()+(ui.sheet?viewSheet():'');
+  $app.innerHTML=html;
+}
+var LOGO='<div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>';
+
+function viewOnboard(){
+  var o=ui.onb, s=ui.step, dots='<div class="dots" aria-hidden="true">'+[0,1,2].map(function(i){return '<i class="'+(i<=s?'on':'')+'"></i>'}).join('')+'</div>';
+  if(s===0)return '<section class="onb">'+LOGO+dots+'<h1>Chores, shared.<br>No sign-up.</h1><p class="lead">Set up your home in under a minute, then send housemates one link.</p>'+
+    '<form data-f="onb0"><label class="f" for="home">What do you call your place?</label><input class="text" id="home" name="home" maxlength="40" placeholder="e.g. Flat 4B" value="'+esc(o.home)+'" autocomplete="off" required>'+
+    '<label class="f" for="me">Your first name</label><input class="text" id="me" name="me" maxlength="24" placeholder="e.g. Sam" value="'+esc(o.me)+'" autocomplete="given-name" required>'+
+    '<div style="margin-top:24px"><button class="btn">Continue</button></div></form></section>';
+  if(s===1)return '<section class="onb">'+dots+'<h1>Who lives with you?</h1><p class="lead">First names only. You can add or change people later.</p>'+
+    '<form data-f="mate" class="inline" style="margin-top:20px"><input class="text" name="name" maxlength="24" placeholder="Add a housemate" autocomplete="off" aria-label="Housemate name"><button class="btn ghost">Add</button></form>'+
+    '<div class="chips" style="margin-top:14px"><span class="chip" aria-pressed="true">'+esc(o.me)+' (you)</span>'+o.mates.map(function(n,i){return '<button class="chip" data-a="rm-mate" data-id="'+i+'" aria-label="Remove '+esc(n)+'">'+esc(n)+' ✕</button>'}).join('')+'</div>'+
+    '<div class="stack" style="margin-top:28px"><button class="btn" data-a="step" data-id="2">'+(o.mates.length?'Continue':'Skip for now')+'</button><button class="btn ghost" data-a="step" data-id="0">Back</button></div></section>';
+  return '<section class="onb">'+dots+'<h1>Pick a few chores to start</h1><p class="lead">They repeat weekly and take turns between everyone. Change anything later.</p>'+
+    '<div class="chips" style="margin-top:20px">'+STARTERS.map(function(t){return '<button class="chip" data-a="starter" data-id="'+esc(t)+'" aria-pressed="'+(o.starters.indexOf(t)>-1)+'">'+esc(t)+'</button>'}).join('')+'</div>'+
+    '<div class="stack" style="margin-top:28px"><button class="btn" data-a="create">Create '+esc(o.home)+'</button><button class="btn ghost" data-a="step" data-id="1">Back</button></div></section>';
+}
+
+function viewJoin(){
+  var p=pending;
+  return '<section class="onb">'+LOGO+'<p class="eyebrow">You\'re invited to</p><h1>'+esc(p.home)+'</h1>'+
+    '<p class="lead">'+p.chores.length+' chore'+(p.chores.length===1?'':'s')+' shared between '+p.members.map(function(m){return esc(m.name)}).join(', ')+'.</p>'+
+    '<h2>Which one is you?</h2><div class="chips">'+p.members.map(function(m){return '<button class="chip" data-a="join" data-id="'+esc(m.id)+'">'+esc(m.name)+'</button>'}).join('')+'</div>'+
+    '<form data-f="joinnew"><label class="f" for="jn">Not listed? Add your first name</label><div class="inline"><input class="text" id="jn" name="name" maxlength="24" placeholder="Your name" autocomplete="given-name" required><button class="btn">Join</button></div></form>'+
+    '<p class="note" style="margin-top:24px">No account or email needed. Everything stays in this browser.'+(state?' <b>Joining replaces the home currently saved on this device.</b>':'')+'</p>'+
+    (state?'<div style="margin-top:8px"><button class="link" data-a="dismiss-join">Keep my current home instead</button></div>':'')+'</section>';
+}
+
+function row(c){
+  var over=diff(c.due)<0;
+  return '<li class="row"><button class="check" data-a="done" data-id="'+c.id+'" aria-label="Mark '+esc(c.title)+' done"><i></i></button>'+
+    '<button class="rowmain" data-a="open" data-id="'+c.id+'"><span class="t">'+esc(c.title)+'</span><span class="m'+(over?' warn':'')+'">'+
+    esc(dueLabel(c.due))+' · '+esc(c.who===state.me?'You':member(c.who).name)+(c.repeat?' · '+esc(repeatLabel(c.repeat).toLowerCase()):'')+'</span></button>'+avatar(c.who)+'</li>';
+}
+function group(title,list,cls){
+  if(!list.length)return '';
+  return '<h2'+(cls?' class="'+cls+'"':'')+'>'+title+'</h2><ul class="card" style="list-style:none">'+list.map(row).join('')+'</ul>';
+}
+function viewToday(){
+  var list=state.chores.filter(function(c){return ui.filter==='all'||c.who===state.me}).sort(function(a,b){return a.due<b.due?-1:a.due>b.due?1:0});
+  var over=[],now=[],week=[],later=[];
+  list.forEach(function(c){var n=diff(c.due);(n<0?over:n===0?now:n<7?week:later).push(c)});
+  var body=list.length?group('Overdue',over,'warn')+group('Today',now)+group('This week',week)+group('Later',later):
+    '<div class="empty"><b>All tidy.</b>'+(ui.filter==='mine'&&state.chores.length?'Nothing on your list right now.':'Add a chore to get started.')+'</div>';
+  return '<header><p class="eyebrow">'+esc(fmt(today(),{weekday:'long',day:'numeric',month:'long'}))+' · '+esc(state.home)+'</p><h1>Hi '+esc(member(state.me).name)+'</h1>'+
+    '<div class="seg" role="group" aria-label="Filter chores"><button data-a="filter" data-id="all" aria-pressed="'+(ui.filter==='all')+'">Everyone</button><button data-a="filter" data-id="mine" aria-pressed="'+(ui.filter==='mine')+'">Mine</button></div></header>'+
+    body+'<button class="btn fab" data-a="add">+ Add chore</button>';
+}
+function viewLog(){
+  var l=state.log||[];
+  return '<header><p class="eyebrow">'+esc(state.home)+'</p><h1>Activity</h1></header>'+
+    (l.length?'<div class="card" style="margin-top:20px">'+l.map(function(e){return '<div class="log">'+avatar(e.who)+'<div><div><b>'+esc(e.who===state.me?'You':member(e.who).name)+'</b> did '+esc(e.title)+'</div><div class="m">'+esc(ago(e.at))+'</div></div></div>'}).join('')+'</div>'
+    :'<div class="empty"><b>Nothing yet.</b>Finished chores show up here so everyone can see who did what.</div>');
+}
+function viewHome(){
+  return '<header><p class="eyebrow">Your home</p><h1>'+esc(state.home)+'</h1></header>'+
+    '<div style="margin-top:20px"><button class="btn" data-a="invite">Invite housemates</button></div>'+
+    '<h2>Housemates</h2><div class="card">'+state.members.map(function(m){return '<div class="member">'+avatar(m.id)+'<span class="n">'+esc(m.name)+(m.id===state.me?'<span class="tag">you</span>':'')+'</span>'+
+      (m.id!==state.me?'<button class="link" data-a="rm-member" data-id="'+m.id+'" aria-label="Remove '+esc(m.name)+'">Remove</button>':'')+'</div>'}).join('')+'</div>'+
+    '<form data-f="member" class="inline" style="margin-top:10px"><input class="text" name="name" maxlength="24" placeholder="Add a housemate" autocomplete="off" aria-label="Housemate name"><button class="btn ghost">Add</button></form>'+
+    '<h2>Privacy</h2><div class="card pad note"><b>Your data stays with you.</b><ul><li>No account, email or password.</li><li>No tracking, ads or analytics.</li><li>Chores and first names are saved only in this browser.</li><li>An invite link carries a copy of your chores and first names. Share it only with people you live with.</li></ul></div>'+
+    '<h2>Prototype</h2><div class="card pad note">This is an early test version. Each phone keeps its own copy, so changes do not sync live yet. Re-send the invite link to share an update.</div>'+
+    '<div style="margin-top:20px"><button class="btn danger" data-a="reset">Erase everything on this device</button></div>';
+}
+function navBar(){
+  function b(id,label,path){return '<button data-a="tab" data-id="'+id+'"'+(ui.tab===id?' aria-current="page"':'')+'><svg viewBox="0 0 24 24" aria-hidden="true">'+path+'</svg>'+label+'</button>'}
+  return '<nav aria-label="Main"><div>'+
+    b('today','Chores','<path d="M4 6.5l1.8 1.8L9 5M4 12.5l1.8 1.8L9 11M4 18.5l1.8 1.8L9 17M13 7h7M13 13h7M13 19h7"/>')+
+    b('log','Activity','<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>')+
+    b('home','Home','<path d="M4 11l8-6.5 8 6.5v8.5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M10 20.5v-6h4v6"/>')+'</div></nav>';
+}
+
+function fields(t){
+  var chips=function(action,items,cur){return '<div class="chips">'+items.map(function(it){return '<button type="button" class="chip" data-a="'+action+'" data-id="'+esc(it[0])+'" aria-pressed="'+(String(it[0])===String(cur))+'">'+esc(it[1])+'</button>'}).join('')+'</div>'};
+  var days=[[today(),'Today'],[addDays(today(),1),'Tomorrow'],[saturday(),'Saturday']];
+  var custom=!days.some(function(d){return d[0]===t.due});
+  return '<label class="f">Who</label>'+chips('set-who',state.members.map(function(m){return[m.id,m.id===state.me?m.name+' (you)':m.name]}),t.who)+
+    '<label class="f">When</label><div class="chips">'+days.map(function(d){return '<button type="button" class="chip" data-a="set-due" data-id="'+d[0]+'" aria-pressed="'+(d[0]===t.due)+'">'+d[1]+'</button>'}).join('')+
+      '<span class="chip" aria-pressed="'+custom+'"><input type="date" data-c="due" value="'+esc(t.due)+'" aria-label="Pick a date"></span></div>'+
+    '<label class="f">Repeats</label>'+chips('set-repeat',REPEATS,t.repeat)+
+    (t.repeat&&state.members.length>1?'<button type="button" class="switch" data-a="set-rotate" aria-pressed="'+!!t.rotate+'"><span>Take turns<small>Passes to the next housemate each time it\'s done</small></span><i></i></button>':'');
+}
+function viewSheet(){
+  var s=ui.sheet, inner='';
+  var head=function(t){return '<div class="grab"></div><div class="sheethead"><h3>'+t+'</h3><button class="x" data-a="close" aria-label="Close">✕</button></div>'};
+  if(s.type==='add'){
+    var d=ui.draft;
+    inner=head('New chore')+'<form data-f="add"><label class="f" for="title">What needs doing?</label><input class="text" id="title" name="title" data-c="title" maxlength="60" placeholder="e.g. Take out bins" value="'+esc(d.title)+'" autocomplete="off" required>'+
+      '<div class="chips" style="margin-top:10px">'+STARTERS.slice(0,5).map(function(t){return '<button type="button" class="chip" data-a="suggest" data-id="'+esc(t)+'">'+esc(t)+'</button>'}).join('')+'</div>'+
+      fields(d)+'<div style="margin-top:24px"><button class="btn">Add chore</button></div></form>';
+  }else if(s.type==='chore'){
+    var c=chore(s.id); if(!c){ui.sheet=null;return ''}
+    inner=head('Chore')+'<label class="f" for="title">Name</label><input class="text" id="title" data-c="title" maxlength="60" value="'+esc(c.title)+'" autocomplete="off">'+fields(c)+
+      '<div class="stack" style="margin-top:24px"><button class="btn" data-a="done" data-id="'+c.id+'">Mark done</button>'+
+      (c.who!==state.me?'<button class="btn ghost" data-a="nudge" data-id="'+c.id+'">Nudge '+esc(member(c.who).name)+'</button>':'')+
+      '<button class="btn danger" data-a="delete" data-id="'+c.id+'">Delete chore</button></div>';
+  }else{
+    inner=head('Invite housemates')+'<p class="lead">Send this link in your group chat. Housemates open it, tap their name, and see the same chores. No download, no account.</p>'+
+      '<input class="text" style="margin-top:16px" readonly value="'+esc(inviteLink())+'" aria-label="Invite link" onfocus="this.select()">'+
+      '<div class="stack" style="margin-top:12px"><button class="btn" data-a="share-invite">Share link</button></div>'+
+      '<p class="note" style="margin-top:14px">The link holds a copy of your chores and first names as they are right now.</p>';
+  }
+  return '<div class="backdrop" data-a="backdrop"><div class="sheet" role="dialog" aria-modal="true">'+inner+'</div></div>';
+}
+
+/* ---------- actions ---------- */
+function target(){return ui.sheet&&ui.sheet.type==='chore'?chore(ui.sheet.id):ui.draft}
+function setField(k,v){var t=target(); if(!t)return; t[k]=v; if(t!==ui.draft)save(); render()}
+function nextMember(id){return state.members[(memberIdx(id)+1)%state.members.length].id}
+function complete(id){
+  var c=chore(id); if(!c)return;
+  undoSnap=JSON.stringify(state);
+  state.log=state.log||[]; state.log.unshift({id:uid(),title:c.title,who:state.me,at:Date.now()}); state.log=state.log.slice(0,100);
+  var msg=c.title+' done';
+  if(c.repeat){c.due=addDays(today(),c.repeat); if(c.rotate&&state.members.length>1){c.who=nextMember(c.who);msg+='. Next: '+(c.who===state.me?'you':member(c.who).name)}}
+  else state.chores=state.chores.filter(function(x){return x.id!==id});
+  save(); ui.sheet=null; render(); toast(msg,true);
+}
+function addMember(name){name=clean(name,24); if(!name)return; state.members.push({id:uid(),name:name}); save(); render()}
+
+var A={
+  tab:function(id){ui.tab=id;window.scrollTo(0,0);render()},
+  filter:function(id){ui.filter=id;render()},
+  step:function(id){ui.step=+id;render()},
+  'rm-mate':function(id){ui.onb.mates.splice(+id,1);render()},
+  starter:function(id){var s=ui.onb.starters,i=s.indexOf(id); if(i>-1)s.splice(i,1); else s.push(id); render()},
+  create:function(){
+    var o=ui.onb, me={id:uid(),name:o.me}, members=[me].concat(o.mates.map(function(n){return{id:uid(),name:n}}));
+    var offsets=[0,0,1,2,3,4,5,6];
+    state={v:1,id:uid(),home:o.home,me:me.id,members:members,log:[],
+      chores:STARTERS.filter(function(t){return o.starters.indexOf(t)>-1}).map(function(t,i){
+        return{id:uid(),title:t,who:members[i%members.length].id,due:addDays(today(),offsets[i%offsets.length]),repeat:7,rotate:true}})};
+    save(); ui.tab='today'; render();
+    if(members.length===1)toast('Home created. Invite housemates from the Home tab.');
+  },
+  join:function(id){state=pending; state.me=id; finishJoin()},
+  'dismiss-join':function(){pending=null; clearHash(); render()},
+  add:function(){ui.draft={title:'',who:state.me,due:today(),repeat:0,rotate:true}; ui.sheet={type:'add'}; render()},
+  open:function(id){ui.sheet={type:'chore',id:id}; render()},
+  invite:function(){ui.sheet={type:'invite'}; render()},
+  close:function(){ui.sheet=null; render()},
+  backdrop:function(id,e){if(e.target.classList.contains('backdrop')){ui.sheet=null; render()}},
+  suggest:function(id){ui.draft.title=id; render()},
+  'set-who':function(id){setField('who',id)},
+  'set-due':function(id){setField('due',id)},
+  'set-repeat':function(id){setField('repeat',+id)},
+  'set-rotate':function(){var t=target(); if(t)setField('rotate',!t.rotate)},
+  done:function(id){complete(id)},
+  'delete':function(id){undoSnap=JSON.stringify(state); var c=chore(id); state.chores=state.chores.filter(function(x){return x.id!==id}); save(); ui.sheet=null; render(); toast((c?c.title:'Chore')+' deleted',true)},
+  undo:function(){if(!undoSnap)return; state=JSON.parse(undoSnap); undoSnap=null; save(); $toast.className=''; render()},
+  nudge:function(id){var c=chore(id); if(!c)return; var d=diff(c.due);
+    share('Hey '+member(c.who).name+', "'+c.title+'" is '+(d<0?'overdue':d===0?'due today':'due '+dueLabel(c.due).toLowerCase())+' at '+state.home+'.',inviteLink())},
+  'share-invite':function(){share('Join '+state.home+' on TidyMate to share chores:',inviteLink())},
+  'rm-member':function(id){var m=member(id); if(!window.confirm('Remove '+m.name+'? Their chores move to you.'))return;
+    state.chores.forEach(function(c){if(c.who===id)c.who=state.me}); state.members=state.members.filter(function(x){return x.id!==id}); save(); render()},
+  reset:function(){if(!window.confirm('Erase this home and all chores from this device? This cannot be undone.'))return;
+    try{localStorage.removeItem(KEY)}catch(e){} state=null; ui.step=0; ui.tab='today'; ui.sheet=null; ui.onb={home:'',me:'',mates:[],starters:STARTERS.slice(0,4)}; render()}
+};
+var F={
+  onb0:function(d){ui.onb.home=clean(d.home,40); ui.onb.me=clean(d.me,24); if(ui.onb.home&&ui.onb.me){ui.step=1; render()}},
+  mate:function(d){var n=clean(d.name,24); if(n&&ui.onb.mates.length<11)ui.onb.mates.push(n); render(); focus('[data-f=mate] input')},
+  member:function(d){addMember(d.name)},
+  joinnew:function(d){var n=clean(d.name,24); if(!n)return; var m={id:uid(),name:n}; state=pending; state.members.push(m); state.me=m.id; finishJoin()},
+  add:function(d){var t=clean(d.title,60); if(!t)return; var c=ui.draft; c.title=t; c.id=uid(); state.chores.push(c); save(); ui.sheet=null; ui.draft=null; render(); toast(t+' added')}
+};
+function finishJoin(){pending=null; save(); clearHash(); ui.tab='today'; render(); toast('Welcome to '+state.home)}
+function clearHash(){try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}}
+function focus(sel){var el=$app.querySelector(sel); if(el)el.focus()}
+
+/* ---------- events ---------- */
+document.addEventListener('click',function(e){
+  var el=e.target.closest('[data-a]'); if(!el)return;
+  var fn=A[el.getAttribute('data-a')]; if(fn)fn(el.getAttribute('data-id'),e);
+});
+document.addEventListener('submit',function(e){
+  var f=e.target.closest('[data-f]'); if(!f)return; e.preventDefault();
+  var d={}; new FormData(f).forEach(function(v,k){d[k]=v}); F[f.getAttribute('data-f')](d);
+});
+document.addEventListener('input',function(e){
+  if(e.target.getAttribute('data-c')==='title'&&ui.draft&&ui.sheet&&ui.sheet.type==='add')ui.draft.title=e.target.value;
+});
+document.addEventListener('change',function(e){
+  var k=e.target.getAttribute('data-c'); if(!k)return;
+  if(k==='due'){if(/^\d{4}-\d\d-\d\d$/.test(e.target.value))setField('due',e.target.value)}
+  else if(k==='title'&&ui.sheet&&ui.sheet.type==='chore'){var c=chore(ui.sheet.id),v=clean(e.target.value,60); if(c&&v){c.title=v;save()}}
+});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ui.sheet){ui.sheet=null;render()}});
+window.addEventListener('hashchange',function(){var p=readInvite(); if(p){pending=p;render()}});
+
+pending=readInvite();
+if(pending&&state&&state.id===pending.id){pending=null;clearHash()}
+render();
+})();
+</script>
+</body>
+</html>
