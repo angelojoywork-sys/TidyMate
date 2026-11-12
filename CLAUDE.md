@@ -25,6 +25,7 @@ A visual designer moving into product and UX design, using this project to learn
 | `DESIGN.md` | The design system: tokens, components, rules. Created in phase 2. |
 | `docs/ROADMAP.md` | Phases and current status. Start here to see what is next. |
 | `docs/DECISIONS.md` | Decision log. |
+| `docs/RESEARCH.md` | Research notes with sources and limits. |
 | `docs/GLOSSARY.md` | Plain-language definitions of terms used in this project. |
 | `index.html` | The current prototype (single file, pre design system). |
 

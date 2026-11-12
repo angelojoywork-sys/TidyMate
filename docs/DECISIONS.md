@@ -7,6 +7,7 @@ Newest first. Each entry: what was decided, why, and what was rejected. These ar
 **Why:** a palette on its own says little. Putting three options (Splash, Marmalade, Grape soda) on the same Chores and Chore done screens, with identical content and layout, makes the comparison fair and lets each be judged against the brief's principles. Each direction is just a set of variables, which previews how tokens will work in phase 2.
 **Also decided:** in every direction the main button and selected states use the brand colour, not black, to honour "black is for text only".
 **Rejected:** mood boards or swatch sheets alone, and changing layout between options, which would muddle what is being compared.
+**Research added after the first draft:** the options were first drawn from the brief alone. A look at 11 competing apps (`docs/RESEARCH.md`) then showed blue and green dominate, purple is not rare, and many competitors sell competition. That corrected the claim that violet was the most distinctive option and confirmed type as the place to stand out.
 **Open:** which direction the owner picks.
 
 ## 2026-11-12: Code tokens are the source of truth; Figma mirrors them
