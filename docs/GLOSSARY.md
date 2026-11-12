@@ -12,6 +12,16 @@ Plain-language definitions of terms used in this project. Added to as new terms 
 
 **Figma variable:** Figma's version of a design token. A named value that layers and components can reference.
 
+**Visual direction:** a candidate look for the product, mainly its colours and typefaces, shown on real screens so options can be compared before committing.
+
+**Primary colour:** the brand colour used for the main action on a screen, such as the "Add chore" button.
+
+**Accent colour:** a second colour used sparingly for small moments, such as the streak badge or the celebration, so the primary colour keeps its meaning.
+
+**Typeface:** a family of letter shapes, such as Nunito. A display typeface is used for headings; a body typeface is used for reading text.
+
+**Contrast ratio:** a measure of how readable one colour is on another, from 1:1 (invisible) to 21:1 (black on white). Normal text should reach at least 4.5:1.
+
 **Component:** a reusable building block, such as a button or a chore row.
 
 **Variant:** a version of a component for a different purpose, such as a primary button and an outline button.

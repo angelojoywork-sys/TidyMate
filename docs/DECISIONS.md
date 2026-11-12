@@ -2,6 +2,13 @@
 
 Newest first. Each entry: what was decided, why, and what was rejected. These are the talking points for the case study.
 
+## 2026-11-12: Visual directions compared on real screens, with only colour and type changing
+
+**Why:** a palette on its own says little. Putting three options (Splash, Marmalade, Grape soda) on the same Chores and Chore done screens, with identical content and layout, makes the comparison fair and lets each be judged against the brief's principles. Each direction is just a set of variables, which previews how tokens will work in phase 2.
+**Also decided:** in every direction the main button and selected states use the brand colour, not black, to honour "black is for text only".
+**Rejected:** mood boards or swatch sheets alone, and changing layout between options, which would muddle what is being compared.
+**Open:** which direction the owner picks.
+
 ## 2026-11-12: Code tokens are the source of truth; Figma mirrors them
 
 **Why:** one place to change a value, and the owner learns how design and code connect. Names are identical in both so a token can be discussed without translating.

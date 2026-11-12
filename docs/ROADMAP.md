@@ -10,7 +10,7 @@ Each phase is sized to fit one working session. Tick items as they finish. The "
 
 ## Phase 1: Visual direction
 
-- [ ] Two or three colour and type directions shown side by side on real screens
+- [x] Two or three colour and type directions shown side by side on real screens (`design/directions.html`)
 - [ ] Owner picks one; record why in the decision log
 
 You learn: how a brief turns into a visual direction, and how to judge options against principles instead of taste.

@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tidy mate: visual directions</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..700&family=Nunito:wght@400..900&family=Outfit:wght@400..800&display=swap" rel="stylesheet">
+<style>
+/* Phase 1 study page. Three candidate directions on the same screens with the same content.
+   Each direction is only a set of variables; the screen markup and layout are shared.
+   Values here are candidates, not tokens yet. The chosen set becomes tokens in phase 2. */
+@font-face{font-family:"Bricolage Grotesque";src:url(../fonts/bricolage.woff2) format("woff2");font-weight:200 800;font-display:swap}
+
+[data-theme=splash]{
+  --primary:#3647F5; --primary-soft:#ECEEFF;
+  --accent:#FFC531; --accent-soft:#FFF3CC; --on-accent-soft:#6E4B00;
+  --ink:#12153A; --muted:#5A5E7A; --line:#E2E4F0; --faint:#F4F5FB;
+  --warn:#C2371A; --warn-soft:#FDECE7;
+  --av1:#3647F5; --av2:#D4521C; --av3:#D13A74; --av4:#0F8A63;
+  --display:"Bricolage Grotesque",ui-rounded,system-ui,sans-serif;
+  --body:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --display-weight:750; --track:-.025em;
+}
+[data-theme=marmalade]{
+  --primary:#CF4010; --primary-soft:#FFEDE3;
+  --accent:#12A594; --accent-soft:#DDF4F0; --on-accent-soft:#0A5C54;
+  --ink:#2A1A14; --muted:#6B5A52; --line:#EFE4DC; --faint:#FAF4EF;
+  --warn:#B4123F; --warn-soft:#FCE4EC;
+  --av1:#CF4010; --av2:#0B7F74; --av3:#6A45C9; --av4:#A8590A;
+  --display:"Nunito",ui-rounded,system-ui,sans-serif;
+  --body:"Nunito",ui-rounded,system-ui,sans-serif;
+  --display-weight:850; --track:-.015em;
+}
+[data-theme=grape]{
+  --primary:#6D3BEB; --primary-soft:#F0EBFF;
+  --accent:#2FD6A3; --accent-soft:#DBF9EF; --on-accent-soft:#0B5E46;
+  --ink:#1C1433; --muted:#625C78; --line:#E6E2F2; --faint:#F6F4FB;
+  --warn:#C2341D; --warn-soft:#FDECE7;
+  --av1:#6D3BEB; --av2:#0B8463; --av3:#D6336C; --av4:#C2560A;
+  --display:"Outfit",system-ui,sans-serif;
+  --body:"DM Sans",system-ui,sans-serif;
+  --display-weight:700; --track:-.02em;
+}
+
+/* ---------- page chrome: deliberately neutral so it does not favour a direction ---------- */
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:#F2F2F4;color:#1B1B21;font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.intro{max-width:1240px;margin:0 auto;padding:40px 24px 8px}
+.intro h1{font-size:28px;line-height:1.2;letter-spacing:-.02em}
+.intro p{max-width:62ch;margin-top:8px;color:#55555F}
+.intro ol{margin:14px 0 0 20px;max-width:62ch;color:#55555F}
+.intro li{margin-top:4px}
+.intro b{color:#1B1B21}
+.hint{display:none;font-size:14px;margin-top:14px;color:#55555F}
+
+.dirs{display:grid;grid-template-rows:auto auto auto;grid-auto-flow:column;grid-auto-columns:375px;justify-content:safe center;gap:28px 40px;
+  padding:28px 24px 64px;overflow-x:auto;scroll-snap-type:x proximity;scroll-padding:0 24px}
+.dir{display:contents}
+.meta,.phone{scroll-snap-align:start}
+.meta{padding:4px 2px}
+.eyebrow{font-size:12.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6A6A75}
+.meta h2{font-size:24px;letter-spacing:-.02em;margin-top:2px}
+.meta .idea{color:#55555F;margin-top:4px;min-height:3em}
+.swatches{display:flex;gap:6px;margin-top:14px;list-style:none}
+.swatches li{flex:1;min-width:0;font-size:10.5px;line-height:1.3;color:#55555F;font-variant-numeric:tabular-nums}
+.swatches i{display:block;height:44px;border-radius:10px;margin-bottom:5px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+.swatches b{display:block;color:#1B1B21;font-weight:600}
+.spec{margin-top:14px;padding:14px 16px;border-radius:14px;background:#fff;color:var(--ink)}
+.spec .d{font-family:var(--display);font-weight:var(--display-weight);letter-spacing:var(--track);font-size:28px;line-height:1.1}
+.spec .b{font-family:var(--body);font-size:15px;margin-top:6px;color:var(--muted)}
+.spec small{display:block;font-size:12px;color:#6A6A75;margin-top:8px}
+.notes{margin-top:14px;font-size:14.5px}
+.notes dt{font-weight:700;margin-top:10px}
+.notes dd{color:#55555F}
+.cap{font-size:12.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6A6A75;margin:0 2px 10px}
+
+@media(max-width:480px){
+  .intro{padding:28px 16px 4px}
+  .hint{display:block}
+  .dirs{grid-auto-columns:100vw;gap:24px 0;padding:20px 0 40px;scroll-snap-type:x mandatory;scroll-padding:0;justify-content:start}
+  .meta,.shot .cap{padding-left:16px;padding-right:16px}
+  .shot .cap{margin-left:0;margin-right:0}
+  .phone{border-radius:0!important;box-shadow:none!important}
+}
+
+/* ---------- the app screens: same rules as the prototype, colours and type from variables ---------- */
+.phone{position:relative;height:860px;overflow:hidden;background:#fff;border-radius:36px;color:var(--ink);font:16px/1.45 var(--body);
+  box-shadow:0 0 0 1px rgba(0,0,0,.08),0 24px 48px -24px rgba(0,0,0,.28)}
+.phone .app{padding:20px 16px 0}
+.phone svg.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.phone .h1{font-family:var(--display);font-size:34px;line-height:1.08;letter-spacing:var(--track);font-weight:var(--display-weight)}
+.phone .h2{font-family:var(--display);font-size:17px;font-weight:650;letter-spacing:-.01em;margin:30px 2px 10px}
+.phone .h2.warn{color:var(--warn)}
+.phone .sub{color:var(--muted);margin-top:6px}
+.phone .bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:26px;min-height:32px}
+.phone .brand{display:flex;align-items:center;gap:8px;font-family:var(--display);font-weight:var(--display-weight);font-size:18px;letter-spacing:-.02em}
+.phone .brand i{width:26px;height:26px;border-radius:8px;background:var(--primary);display:grid;place-items:center}
+.phone .brand svg{width:15px;height:15px;stroke:#fff;fill:none;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}
+.phone .streak{display:inline-flex;align-items:center;gap:6px;padding:6px 12px 6px 9px;border-radius:999px;background:var(--accent-soft);color:var(--on-accent-soft);font-size:13px;font-weight:650;white-space:nowrap}
+.phone .streak svg{width:16px;height:16px}
+.phone .card{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.phone .row{display:flex;align-items:center;border-top:1px solid var(--line)}
+.phone .row:first-child{border-top:0}
+.phone .rowmain{flex:1;min-width:0;padding:12px 4px 12px 12px;display:flex;align-items:center;gap:12px}
+.phone .ico{position:relative;flex:none;width:44px;height:44px;border-radius:13px;background:var(--primary-soft);color:var(--primary);display:grid;place-items:center}
+.phone .ico.warn{background:var(--warn-soft);color:var(--warn)}
+.phone .ico .av{position:absolute;right:-5px;bottom:-5px;width:22px;height:22px;font-size:11px;box-shadow:0 0 0 2px #fff}
+.phone .t{display:block;font-weight:600}
+.phone .m{display:block;font-size:13.5px;color:var(--muted)}
+.phone .m.warn{color:var(--warn);font-weight:600}
+.phone .check{flex:none;width:56px;height:60px;display:grid;place-items:center}
+.phone .check i{width:30px;height:30px;border-radius:50%;border:2px solid var(--line);filter:brightness(.88)}
+.phone .av{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:700;color:#fff;font-family:var(--body)}
+.phone .seg{display:inline-flex;background:var(--faint);border-radius:999px;padding:4px;margin-top:18px}
+.phone .seg span{padding:8px 18px;border-radius:999px;font-size:14px;font-weight:600;color:var(--muted)}
+.phone .seg .on{background:var(--primary);color:#fff}
+.phone .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:54px;padding:12px 22px;border-radius:999px;font-family:var(--display);font-size:17px;font-weight:650;letter-spacing:-.01em;background:var(--primary);color:#fff}
+.phone .btn.line{background:#fff;color:var(--primary);box-shadow:inset 0 0 0 1.5px var(--primary)}
+.phone .stack>*+*{margin-top:10px}
+.phone .fab{position:absolute;left:16px;right:16px;bottom:78px;width:auto;box-shadow:0 10px 24px -8px color-mix(in srgb,var(--primary) 60%,transparent)}
+.phone .nav{position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);display:flex}
+.phone .nav span{flex:1;min-height:62px;font-size:12px;font-weight:600;color:var(--muted);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
+.phone .nav .on{color:var(--primary)}
+.phone .backdrop{position:absolute;inset:0;background:color-mix(in srgb,var(--ink) 45%,transparent);display:flex;align-items:flex-end}
+.phone .sheet{background:#fff;width:100%;border-radius:26px 26px 0 0;padding:10px 16px 20px}
+.phone .grab{width:40px;height:4px;border-radius:2px;background:var(--line);margin:0 auto 12px}
+.phone .cele{text-align:center;padding:14px 4px 4px}
+.phone .tick{position:relative;width:88px;height:88px;margin:6px auto 18px}
+.phone .tick b{position:absolute;inset:0;border-radius:50%;background:var(--primary);display:grid;place-items:center}
+.phone .tick b svg{width:42px;height:42px;fill:none;stroke:#fff;stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round}
+.phone .tick u{position:absolute;left:50%;top:50%;width:9px;height:9px;margin:-4.5px;border-radius:50%;background:var(--accent);transform:translate(var(--x),var(--y))}
+.phone .tick u:nth-child(1){--x:-58px;--y:-34px}
+.phone .tick u:nth-child(2){--x:60px;--y:-30px;background:var(--primary)}
+.phone .tick u:nth-child(3){--x:-52px;--y:42px;background:var(--primary);width:6px;height:6px}
+.phone .tick u:nth-child(4){--x:56px;--y:44px}
+.phone .tick u:nth-child(5){--x:0px;--y:-62px;width:6px;height:6px}
+.phone .h3{font-family:var(--display);font-size:26px;line-height:1.15;letter-spacing:-.02em;font-weight:700;text-wrap:balance}
+.phone .cele p{color:var(--muted);margin-top:6px}
+.phone .next{display:flex;align-items:center;gap:12px;text-align:left;margin:20px 0 18px;padding:14px;border-radius:16px;background:var(--faint)}
+.phone .next b{display:block}
+.phone .next span span{font-size:14px;color:var(--muted)}
+.phone .link{display:inline-block;color:var(--muted);font-size:14px;text-decoration:underline;text-underline-offset:3px;padding:10px;margin-top:6px}
+</style>
+</head>
+<body>
+<header class="intro">
+  <h1>Tidy mate: three visual directions</h1>
+  <p>Same two screens, same content, same layout. Only colour and type change. Judge each one against the brief, not against taste:</p>
+  <ol>
+    <li><b>Calm first, playful second.</b> Is the list quiet enough to scan in a second?</li>
+    <li><b>The app does the talking.</b> Does the overdue chore stand out from the brand colour without shouting?</li>
+    <li><b>A house, not a competition.</b> Does finishing a chore feel like a shared win?</li>
+    <li><b>Vibrant, with black for text only.</b> Does it feel lively on a white base?</li>
+  </ol>
+  <p class="hint">Swipe sideways to compare directions.</p>
+</header>
+
+<main class="dirs" id="dirs"></main>
+
+<script>
+(function(){
+'use strict';
+var DIRS=[
+  {id:'splash',letter:'A',name:'Splash',idea:'Cobalt blue with a sunshine yellow accent. Bricolage Grotesque for headings, the phone\'s own font for text.',
+   fonts:'Bricolage Grotesque + system font',
+   fits:'Blue reads as clean and calm, and it sits far from the warning red, so overdue is unmistakable. Closest to the prototype, so least rework. The headings have real character.',
+   watch:'Blue is the most common app colour, so it is the least distinctive of the three.'},
+  {id:'marmalade',letter:'B',name:'Marmalade',idea:'Warm tangerine with a teal accent. Nunito, a rounded typeface, for everything.',
+   fonts:'Nunito',
+   fits:'The warmest and most homely. Rounded letters match the pill buttons and the mascot.',
+   watch:'Orange sits next to red, so the overdue warning had to move to crimson and still competes with the brand colour. The loudest option, which strains "calm first".'},
+  {id:'grape',letter:'C',name:'Grape soda',idea:'Violet with a mint accent. Outfit for headings, DM Sans for text.',
+   fonts:'Outfit + DM Sans',
+   fits:'The most distinctive. Violet is far from warning red, and the mint makes the celebration feel fresh.',
+   watch:'Violet has no natural link to home or cleaning. The geometric type is tidy but has less personality than Bricolage.'}
+];
+var SW=[['--primary','Primary'],['--primary-soft','Primary soft'],['--accent','Accent'],['--accent-soft','Accent soft'],['--warn','Warning'],['--ink','Text']];
+var P={
+  vacuum:'<circle cx="8" cy="17" r="3.5"/><path d="M11.5 17H17a3 3 0 0 0 3-3V5.5A1.5 1.5 0 0 0 18.5 4H16M8 13.5V9"/>',
+  drop:'<path d="M12 3.5c3 3.6 5.5 6.6 5.5 10a5.5 5.5 0 0 1-11 0c0-3.4 2.5-6.4 5.5-10z"/><path d="M9.5 14a2.5 2.5 0 0 0 2.5 2.5"/>',
+  bin:'<path d="M5 7h14M10 7V4.5h4V7M7 7l1 12.5h8L17 7M10.5 11v5M13.5 11v5"/>',
+  spray:'<path d="M9 9h5v2.5l2 2V20H7v-6.5l2-2zM9 9V5h5l-1.5 2"/><path d="M17.5 4.5h.01M19.5 6.5h.01M17.5 8.5h.01"/>',
+  flame:'<path d="M12 3c.5 3.5 5 5.5 5 10.500a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5.3 1.5 1 2.3 1.800 2.5C10.5 8.5 11 5.5 12 3z"/>',
+  check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  send:'<path d="M20 4L10.5 13.5M20 4l-6 16-3.5-6.5L4 10z"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  list:'<path d="M4 6.5l1.800 1.800L9 5M4 12.5l1.800 1.800L9 11M4 18.5l1.800 1.800L9 17M13 7h7M13 13h7M13 19h7"/>',
+  clock:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+  house:'<path d="M4 11l8-6.5 8 6.5v8.5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M10 20.5v-6h4v6"/>'
+};
+var NAMES=['Alex','Priya','Sam','Jo'];
+function icon(n){return '<svg class="i" viewBox="0 0 24 24" aria-hidden="true">'+P[n]+'</svg>'}
+function av(i){return '<span class="av" style="background:var(--av'+(i+1)+')">'+NAMES[i].charAt(0)+'</span>'}
+function row(ic,title,due,who,over){
+  return '<div class="row"><div class="rowmain"><span class="ico'+(over?' warn':'')+'">'+icon(ic)+av(who)+'</span>'+
+    '<span><span class="t">'+title+'</span><span class="m'+(over?' warn':'')+'">'+due+' · '+(who===0?'You':NAMES[who])+'</span></span></div>'+
+    '<span class="check"><i></i></span></div>';
+}
+function chores(){
+  return '<div class="app"><div class="bar"><div class="brand"><i><svg viewBox="0 0 24 24">'+P.check+'</svg></i>Tidy mate</div>'+
+    '<span class="streak">'+icon('flame')+'5 on time in a row</span></div>'+
+    '<div class="h1">Hi Alex</div><p class="sub">1 thing is waiting on you today. Thursday 12 November.</p>'+
+    '<div class="seg"><span class="on">Everyone</span><span>Mine</span></div>'+
+    '<div class="h2 warn">Overdue</div><div class="card">'+row('bin','Take out bins','Due yesterday',2,true)+'</div>'+
+    '<div class="h2">Today</div><div class="card">'+row('vacuum','Vacuum the house','Today',0)+row('drop','Clean washroom','Today',1)+'</div>'+
+    '<div class="h2">This week</div><div class="card">'+row('spray','Wipe kitchen','Saturday',3)+'</div></div>'+
+    '<div class="btn fab">'+icon('plus')+'Add chore</div>'+
+    '<div class="nav"><span class="on">'+icon('list')+'Chores</span><span>'+icon('clock')+'Activity</span><span>'+icon('house')+'House</span></div>';
+}
+function done(){
+  return chores()+'<div class="backdrop"><div class="sheet"><div class="grab"></div><div class="cele">'+
+    '<div class="tick"><u></u><u></u><u></u><u></u><u></u><b><svg viewBox="0 0 24 24">'+P.check+'</svg></b></div>'+
+    '<div class="h3">Vacuum the house is done</div><p>That\'s 6 on time in a row for the house.</p>'+
+    '<div class="next">'+av(1)+'<span><b>Next up: Priya</b><span>Thursday 19 November</span></span></div>'+
+    '<div class="stack"><div class="btn">'+icon('send')+'Tell Priya they\'re up</div><div class="btn line">Done</div></div>'+
+    '<span class="link">Undo, I tapped by mistake</span></div></div></div>';
+}
+function hex(el,v){return getComputedStyle(el).getPropertyValue(v).trim().toUpperCase()}
+
+var root=document.getElementById('dirs');
+root.innerHTML=DIRS.map(function(d){
+  return '<section class="dir" data-theme="'+d.id+'" aria-label="Direction '+d.letter+': '+d.name+'">'+
+    '<div class="meta"><p class="eyebrow">Direction '+d.letter+'</p><h2>'+d.name+'</h2><p class="idea">'+d.idea+'</p>'+
+      '<ul class="swatches">'+SW.map(function(s){return '<li><i style="background:var('+s[0]+')"></i><b>'+s[1]+'</b><span data-v="'+s[0]+'"></span></li>'}).join('')+'</ul>'+
+      '<div class="spec"><div class="d">Next up: Priya</div><div class="b">Vacuum the house · Today · You</div><small>'+d.fonts+'</small></div>'+
+      '<dl class="notes"><dt>Fits the brief</dt><dd>'+d.fits+'</dd><dt>Watch out</dt><dd>'+d.watch+'</dd></dl></div>'+
+    '<div class="shot"><p class="cap">Chores</p><div class="phone" role="img" aria-label="Chores screen, '+d.name+'"><div inert>'+chores()+'</div></div></div>'+
+    '<div class="shot"><p class="cap">Chore done</p><div class="phone" role="img" aria-label="Chore done screen, '+d.name+'"><div inert>'+done()+'</div></div></div>'+
+  '</section>';
+}).join('');
+[].forEach.call(root.querySelectorAll('[data-v]'),function(el){el.textContent=hex(el,el.getAttribute('data-v'))});
+})();
+</script>
+</body>
+</html>
