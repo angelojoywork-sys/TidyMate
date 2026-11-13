@@ -41,3 +41,9 @@ Plain-language definitions of terms used in this project. Added to as new terms 
 **Commit:** a saved snapshot of the project with a message describing what changed.
 
 **Markdown (.md):** a plain text format for documents, used here for the brief, the roadmap and the decision log because both people and Claude can read it cheaply.
+
+**Micro-interaction:** a small, quick response to a tap or change, such as a checkmark drawing itself or a chip popping in. It confirms the action without getting in the way.
+
+**Easing:** the speed curve of an animation. "Ease out" starts fast and settles gently, which feels natural for things appearing. Ours is named `--out`.
+
+**Reduced motion:** a phone setting for people who find movement uncomfortable. Our animations switch off or become static when it is on.

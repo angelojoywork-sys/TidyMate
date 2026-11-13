@@ -2,6 +2,14 @@
 
 Newest first. Each entry: what was decided, why, and what was rejected. These are the talking points for the case study.
 
+## 2026-11-13: Interaction explored as two options beside the live app
+
+**Why:** the owner likes the current onboarding and wants to compare alternatives before committing. Option A ("Living bubbles") and Option B (shaped by Mobbin references) are separate files in `design/`, so the live `index.html` is untouched. Both keep the blue palette and Bricolage type so only interaction differs, the same fair-comparison rule as the visual directions.
+**Option A, built:** bubbles drift in a fixed layer outside the app, because the app rebuilds the whole screen on every tap and that would restart any animation inside it. Entry animations play only when the view actually changes. Motion lengths are named values (fast 150ms, base 300ms, slow 500ms), a preview of phase 2 tokens. Bubbles are fainter inside the app than on the welcome screen ("calm first"), pause when the tab is hidden, and switch off under reduced motion.
+**Guard rails:** nothing loops except the bubbles and the mascot bob; no animation delays a tap.
+**Rejected:** animating inside the rebuilt screen (restarts on every tap); a heavier bubble effect on every screen (distracts from the chores).
+**Open:** Option B waits on Mobbin, whose connector was failing and is not available in this session.
+
 ## 2026-11-12: Visual directions compared on real screens, with only colour and type changing
 
 **Why:** a palette on its own says little. Putting three options (Splash, Marmalade, Grape soda) on the same Chores and Chore done screens, with identical content and layout, makes the comparison fair and lets each be judged against the brief's principles. Each direction is just a set of variables, which previews how tokens will work in phase 2.

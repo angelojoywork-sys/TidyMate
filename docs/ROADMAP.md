@@ -15,6 +15,15 @@ Each phase is sized to fit one working session. Tick items as they finish. The "
 
 You learn: how a brief turns into a visual direction, and how to judge options against principles instead of taste.
 
+## Phase 1b: Interaction direction (exploration beside phase 1)
+
+- [x] Option A, living bubbles (`design/option-a.html`)
+- [x] Compare page with current, A and B slot (`design/options.html`)
+- [ ] Option B, Mobbin-led: research, check-in with owner, then build (blocked: Mobbin not available)
+- [ ] Owner picks; record why in the decision log
+
+You learn: how motion changes the feel of an app, and how to keep it from distracting.
+
 ## Phase 2: Design tokens
 
 - [ ] Token file in code: colour, type, spacing, radius, shadow, motion
