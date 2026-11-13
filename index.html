@@ -24,7 +24,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%}
-body{background:var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' fill='none' stroke='%23E6E9FC' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='38' cy='44' r='14'/%3E%3Cpath d='M30 40a9 9 0 0 1 6-6'/%3E%3Ccircle cx='176' cy='150' r='9'/%3E%3Ccircle cx='200' cy='48' r='5'/%3E%3Ccircle cx='70' cy='190' r='6'/%3E%3Cpath d='M120 96v16M112 104h16M214 206v12M208 212h12'/%3E%3C/svg%3E");
+body{background:var(--bg);
   color:var(--ink);font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;caret-color:var(--blue);accent-color:var(--blue)}
 ::selection{background:var(--blue);color:#fff}
 button,input{font:inherit;color:inherit}
@@ -40,8 +40,9 @@ h2.warn{color:var(--warn)}
 h2 small{font:500 14px/1 inherit;color:var(--muted);margin-left:6px;letter-spacing:0}
 .sub{color:var(--muted);margin-top:6px}
 
-.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:26px;min-height:32px}
+.bar{display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:26px;min-height:32px}
 .brand{display:flex;align-items:center;gap:8px;font-family:var(--d);font-weight:750;font-size:18px;letter-spacing:-.02em}
+
 .brand i{width:26px;height:26px;border-radius:8px;background:var(--ink);display:grid;place-items:center}
 .brand svg{width:15px;height:15px;stroke:#fff;fill:none;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}
 .streak{display:inline-flex;align-items:center;gap:6px;padding:6px 12px 6px 9px;border-radius:999px;background:var(--blue-soft);color:var(--blue);font-size:13px;font-weight:650;white-space:nowrap}
@@ -166,10 +167,15 @@ nav svg{transition:transform .2s var(--out)}
 #toast button{color:inherit;font-weight:700;text-decoration:underline;text-underline-offset:3px;padding:4px 10px}
 
 /* welcome */
-.welcome{min-height:calc(100dvh - 44px - env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:center;text-align:center;padding-top:7vh}
+.welcome{min-height:calc(100dvh - 44px - env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:center;text-align:center;padding-top:0}
+.welcome h1{margin-top:auto}
+.welcome .stack{margin-top:auto;padding-top:24px}
 .welcome h1{font-size:clamp(46px,14vw,60px);font-weight:800;letter-spacing:-.035em}
+.welcome h1{background:linear-gradient(105deg,var(--ink) 40%,#7C88F5 50%,var(--ink) 60%) 100% 0/250% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:shine 4.5s 1s ease-in-out infinite}
+@keyframes shine{0%{background-position:100% 0}45%,100%{background-position:0 0}}
+@media (prefers-reduced-motion:reduce){.welcome h1{animation:none;background:none;-webkit-text-fill-color:currentColor;color:var(--ink)}}
 .welcome .tagline{font-family:var(--d);font-size:20px;line-height:1.25;font-weight:500;margin-top:14px;max-width:11em;text-wrap:balance}
-.welcome figure{flex:1;display:grid;place-items:center;width:100%;padding:24px 0;min-height:240px}
+.welcome figure{display:none}
 .welcome img{width:min(260px,68vw);aspect-ratio:1;object-fit:cover;border-radius:36px;background:#000;animation:bob 4.5s ease-in-out infinite}
 @keyframes bob{50%{transform:translateY(-8px) rotate(-1.5deg)}}
 .welcome .stack{width:100%}
@@ -180,15 +186,55 @@ nav svg{transition:transform .2s var(--out)}
 .back{display:inline-flex;align-items:center;gap:4px;color:var(--muted);font-size:14.5px;font-weight:600;padding:8px 10px 8px 0;margin-bottom:10px}
 .back:hover{color:var(--ink)}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;animation-iteration-count:1!important;transition-duration:.01s!important}}
+
+/* ---------- Option B: sticker press ----------
+   Cues taken from inspo.dev references (MoMoney, Analogue, Hey): chunky offset shadows that physically press in,
+   sticker-style labels, one full-width action. Colour and type unchanged; only feel differs. Bubbles from A added afterwards. */
+:root{--lift:3px;--press-ms:90ms;--edge:#1E2BB8}
+.btn.blue,.btn:not(.line):not(.danger):not(.blue){box-shadow:0 var(--lift) 0 var(--edge);transform:translateY(0);transition:transform var(--press-ms),box-shadow var(--press-ms),background .15s}
+.btn:not(.line):not(.danger):not(.blue){background:var(--blue);color:#fff}
+.btn:not(.line):not(.danger):hover{background:#2A3ADB}
+.btn:not(.line):not(.danger):active{transform:translateY(var(--lift));box-shadow:0 0 0 var(--edge)}
+.btn.line{box-shadow:inset 0 0 0 1.5px var(--ink),0 var(--lift) 0 var(--ink);transition:transform var(--press-ms),box-shadow var(--press-ms)}
+.btn.line:active{transform:translateY(var(--lift));box-shadow:inset 0 0 0 1.5px var(--ink),0 0 0 var(--ink)}
+.fab{box-shadow:0 var(--lift) 0 var(--edge),0 14px 22px -12px rgba(54,71,245,.5)}
+.chip{box-shadow:0 2px 0 var(--line);transition:transform var(--press-ms),box-shadow var(--press-ms),background .15s,color .15s,border-color .15s}
+.chip:active{transform:translateY(2px);box-shadow:none}
+.chip[aria-pressed=true]{background:var(--blue);border-color:var(--blue);box-shadow:0 2px 0 var(--edge)}
+.card{border:1.5px solid var(--ink);border-radius:18px;box-shadow:0 4px 0 var(--ink)}
+.row{border-top:1.5px dashed var(--line)}
+.ico{border-radius:14px;box-shadow:inset 0 -3px 0 rgba(54,71,245,.18)}
+.ico.warn{box-shadow:inset 0 -3px 0 rgba(191,53,22,.18)}
+.check i{width:32px;height:32px;border:2px solid var(--ink);box-shadow:0 2px 0 var(--ink);transition:transform var(--press-ms),box-shadow var(--press-ms),background .15s}
+.check:active i{transform:translateY(2px);box-shadow:none}
+.check.doing i{background:var(--blue);transform:translateY(2px) rotate(-8deg);box-shadow:none}
+.streak{background:#FFE66B;color:var(--ink);border:1.5px solid var(--ink);box-shadow:2px 2px 0 var(--ink);rotate:-2deg;font-weight:700}
+.streak.zero{background:var(--faint);color:var(--muted);border-color:var(--line);box-shadow:none;rotate:0deg}
+.sheet h3{display:inline-block;background:#FFE66B;border:1.5px solid var(--ink);box-shadow:3px 3px 0 var(--ink);padding:4px 12px;border-radius:10px;rotate:-1.5deg}
+nav{border-top:1.5px solid var(--ink)}
+@media (prefers-reduced-motion:reduce){.btn,.chip,.check i{transition:none}}
+/* ---------- Bubbles added to B (ported from A): ambient layer + fizz on tick ---------- */
+#app{position:relative;z-index:1}
+#bubbles{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0;opacity:.85}
+#bubbles.paused i{animation-play-state:paused}
+#bubbles i{position:absolute;bottom:-160px;left:var(--x);width:var(--s);height:var(--s);border:2px solid #E6E9FC;border-radius:50%;will-change:transform;
+  animation:rise var(--t) linear var(--d) infinite,sway var(--w) ease-in-out var(--d) infinite alternate}
+#bubbles i:after{content:"";position:absolute;left:18%;top:18%;width:28%;height:28%;border:2px solid transparent;border-top-color:#E6E9FC;border-left-color:#E6E9FC;border-radius:50%;rotate:-12deg}
+@keyframes rise{to{transform:translateY(calc(-100vh - 320px))}}
+@keyframes sway{from{translate:calc(var(--a) * -1) 0}to{translate:var(--a) 0}}
+.fizz{position:fixed;z-index:30;width:var(--s);height:var(--s);margin:calc(var(--s) / -2);border:2px solid var(--blue);border-radius:50%;pointer-events:none;animation:fizz .8s var(--out) forwards}
+@keyframes fizz{from{opacity:1;transform:translate(0,0) scale(.5)}to{opacity:0;transform:translate(var(--x),var(--y)) scale(1.1)}}
+@media (prefers-reduced-motion:reduce){#bubbles{display:none}}
 </style>
 </head>
 <body>
+<div id="bubbles" aria-hidden="true"></div>
 <main id="app"></main>
 <div id="toast" role="status" aria-live="polite"></div>
 <script>
 (function(){
 'use strict';
-var KEY='tidymate.v1', MAX=4;
+var KEY='tidymate.v2', MAX=4;
 var COLORS=['#3647F5','#D4521C','#D13A74','#0F8A63'];
 var STARTERS=['Vacuum the house','Clean washroom','Clean fridge','Take out bins','Wipe kitchen','Mop floors','Laundry','Water plants'];
 var REPEATS=[[0,'Once'],[7,'Weekly'],[14,'Every 2 weeks'],[30,'Monthly']];
@@ -250,26 +296,50 @@ function avatar(id){var m=member(id);return '<span class="av" style="background:
 function clean(s,n){return String(s==null?'':s).trim().slice(0,n||40)}
 function who(id){return id===state.me?'You':member(id).name}
 
-/* ---------- storage ---------- */
+/* ---------- storage: this device first, then synced to the cloud ---------- */
 function load(){try{var s=JSON.parse(localStorage.getItem(KEY));return valid(s)?s:null}catch(e){return null}}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+function localSave(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+function save(){localSave(); pushCloud()}
 function valid(s){return !!(s&&typeof s.home==='string'&&Array.isArray(s.members)&&s.members.length&&Array.isArray(s.chores))}
 
-/* ---------- invite links (a snapshot of the house, carried in the URL) ---------- */
-function enc(o){return btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
-function dec(s){return JSON.parse(decodeURIComponent(escape(atob(s.replace(/-/g,'+').replace(/_/g,'/')))))}
-function inviteLink(){
-  return location.origin+location.pathname+'#join='+enc({id:state.id,home:state.home,members:state.members,chores:state.chores,streak:state.streak||0,best:state.best||0});
+/* ---------- cloud sync (Firebase Firestore: one document per house) ---------- */
+/* Shared: home, members, chores, log, streak, best. Stays on this device: which member "me" is. */
+var cloudReady=false, listening=null, pushTimer=null, remoteTimer=null;
+function houseId(){var a=new Uint8Array(20); crypto.getRandomValues(a); return Array.prototype.map.call(a,function(b){return (b%36).toString(36)}).join('')}
+function cloudDoc(){return JSON.parse(JSON.stringify({home:state.home,members:state.members,chores:state.chores,log:(state.log||[]).slice(0,100),streak:state.streak||0,best:state.best||0}))}
+function pushCloud(){
+  if(!state||!cloudReady)return;
+  startListening(); clearTimeout(pushTimer);
+  pushTimer=setTimeout(function(){pushTimer=null; window.Cloud.push(state.id,cloudDoc()).catch(function(){})},300);
 }
-function parseInvite(text){
-  var i=String(text).indexOf('#join='); if(i<0)return null;
-  try{
-    var o=dec(String(text).slice(i+6).trim().split(/\s/)[0]); if(!valid(o))return null;
-    return {v:1,id:clean(o.id,20)||uid(),home:clean(o.home,40)||'House',me:null,log:[],streak:Math.max(0,o.streak|0),best:Math.max(0,o.best|0),
-      members:o.members.slice(0,MAX).map(function(m){return{id:clean(m.id,20)||uid(),name:clean(m.name,24)||'Housemate'}}),
-      chores:o.chores.slice(0,60).map(function(c){return{id:clean(c.id,20)||uid(),title:clean(c.title,60)||'Chore',who:clean(c.who,20),
-        due:/^\d{4}-\d\d-\d\d$/.test(c.due)?c.due:today(),repeat:[0,7,14,30].indexOf(c.repeat)>-1?c.repeat:0,rotate:!!c.rotate}})};
-  }catch(e){return null}
+function startListening(){
+  if(!state||!cloudReady||listening===state.id)return;
+  listening=state.id; window.Cloud.listen(state.id,applyRemote);
+}
+function applyRemote(d){
+  if(!state)return;
+  if(d===null){pushCloud();return}                      // house not in the cloud yet: upload it
+  var p=fromDoc(state.id,d); if(!p)return;
+  var typing=document.activeElement&&/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName);
+  if(ui.sheet||typing||pushTimer){clearTimeout(remoteTimer); remoteTimer=setTimeout(function(){applyRemote(d)},1500); return}  // don't disturb an edit in progress
+  state.home=p.home; state.members=p.members; state.chores=p.chores; state.log=p.log; state.streak=p.streak; state.best=p.best;
+  localSave(); render();
+}
+function fromDoc(id,o){
+  if(!valid(o))return null;
+  return {v:1,id:id,home:clean(o.home,40)||'House',me:null,streak:Math.max(0,o.streak|0),best:Math.max(0,o.best|0),
+    log:(Array.isArray(o.log)?o.log:[]).slice(0,100).map(function(l){return{id:clean(l.id,20)||uid(),title:clean(l.title,60),who:clean(l.who,20),at:+l.at||Date.now(),late:!!l.late}}),
+    members:o.members.slice(0,MAX).map(function(m){return{id:clean(m.id,20)||uid(),name:clean(m.name,24)||'Housemate'}}),
+    chores:o.chores.slice(0,60).map(function(c){return{id:clean(c.id,20)||uid(),title:clean(c.title,60)||'Chore',who:clean(c.who,20),
+      due:/^\d{4}-\d\d-\d\d$/.test(c.due)?c.due:today(),repeat:[0,7,14,30].indexOf(c.repeat)>-1?c.repeat:0,rotate:!!c.rotate}})};
+}
+function inviteLink(){return location.origin+location.pathname+'#house='+state.id}
+function inviteId(text){var m=/#house=([a-z0-9]{20})/.exec(String(text)); return m?m[1]:null}
+function joinFromId(id){
+  return window.Cloud.get(id).then(function(d){
+    var p=fromDoc(id,d); if(p){pending=p; ui.joinErr=''} else {pending=null; ui.joinErr='We couldn\'t find that house. Ask your housemate to send the link again.'}
+    render();
+  },function(){ui.joinErr='Couldn\'t reach the house. Check your connection and try again.'; render()});
 }
 function share(text,url){
   if(navigator.share){navigator.share({text:text,url:url}).catch(function(){});return}
@@ -287,8 +357,21 @@ function toast(msg,undo){
 }
 
 /* ---------- views ---------- */
-var MARK='<div class="brand"><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.500l4.500 4.500L19 7.500"/></svg></i>Tidy mate</div>';
+var MARK='<div class="brand">Tidy mate</div>';
 function bar(right){return '<div class="bar">'+MARK+(right||'')+'</div>'}
+var reduced=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
+function fizz(el){
+  if(reduced)return; var r=el.getBoundingClientRect(), cx=r.left+r.width/2, cy=r.top+r.height/2;
+  for(var i=0;i<6;i++){var b=document.createElement('b'), a=-Math.PI/2+(i-2.5)*.55, d=34+Math.random()*28;
+    b.className='fizz'; b.style.cssText='left:'+cx+'px;top:'+cy+'px;--x:'+(Math.cos(a)*d).toFixed(1)+'px;--y:'+(Math.sin(a)*d-10).toFixed(1)+'px;--s:'+(6+Math.random()*8).toFixed(1)+'px';
+    document.body.appendChild(b); (function(n){setTimeout(function(){n.remove()},900)})(b)}
+}
+(function(){
+  var rows=[[8,64,34,-6,22,7],[22,28,26,-19,14,5],[35,46,42,-30,26,9],[48,22,29,-11,12,6],[60,58,38,-24,20,8],[72,34,31,-2,16,6],[84,70,44,-36,28,10],[93,26,27,-15,12,5],[15,40,36,-33,18,7]];
+  var b=document.getElementById('bubbles');
+  b.innerHTML=rows.map(function(r){return '<i style="--x:'+r[0]+'%;--s:'+r[1]+'px;--t:'+r[2]+'s;--d:'+r[3]+'s;--a:'+r[4]+'px;--w:'+r[5]+'s"></i>'}).join('');
+  document.addEventListener('visibilitychange',function(){b.classList.toggle('paused',document.hidden)});
+})();
 function render(){
   var html, bare=true;
   if(pending)html=viewJoin();
@@ -300,7 +383,7 @@ function render(){
 
 function viewWelcome(){
   return '<section class="welcome"><h1>Tidy mate</h1><p class="tagline">Track the chores, spare the drama!</p>'+
-    '<figure><img src="assets/mascot.png" alt="A cheerful bucket holding a spray bottle and a mop" width="260" height="260"></figure>'+
+    '<figure aria-hidden="true"></figure>'+
     '<div class="stack"><button class="btn" data-a="step" data-id="0">Get started</button><button class="btn line" data-a="step" data-id="-2">Join house</button></div></section>';
 }
 function viewPaste(){
@@ -358,7 +441,7 @@ function viewToday(){
   list.forEach(function(c){var n=diff(c.due);(n<0?over:n===0?now:n<7?week:later).push(c)});
   var mine=state.chores.filter(function(c){return c.who===state.me&&diff(c.due)<=0}).length;
   var body=list.length?group('Overdue',over,'warn')+group('Today',now)+group('This week',week)+group('Later',later):
-    '<div class="empty"><img src="assets/mascot.png" alt="" width="120" height="120"><b>All tidy.</b>'+(ui.filter==='mine'&&state.chores.length?'Nothing on your list right now.':'Add a chore to get started.')+'</div>';
+    '<div class="empty"><b>All tidy.</b>'+(ui.filter==='mine'&&state.chores.length?'Nothing on your list right now.':'Add a chore to get started.')+'</div>';
   return bar(streakPill())+'<header><h1>Hi '+esc(member(state.me).name)+'</h1><p class="sub">'+
     (mine?mine+' thing'+(mine===1?' is':'s are')+' waiting on you today.':'Nothing waiting on you today.')+' '+esc(fmt(today(),{weekday:'long',day:'numeric',month:'long'}))+'.</p>'+
     '<div class="seg" role="group" aria-label="Filter chores"><button data-a="filter" data-id="all" aria-pressed="'+(ui.filter==='all')+'">Everyone</button><button data-a="filter" data-id="mine" aria-pressed="'+(ui.filter==='mine')+'">Mine</button></div></header>'+
@@ -460,7 +543,7 @@ var A={
   create:function(){
     var o=ui.onb, me={id:uid(),name:o.me}, members=[me].concat(o.mates.slice(0,MAX-1).map(function(n){return{id:uid(),name:n}}));
     var offsets=[0,0,1,2,3,4,5,6];
-    state={v:1,id:uid(),home:o.home,me:me.id,members:members,log:[],streak:0,best:0,
+    state={v:1,id:houseId(),home:o.home,me:me.id,members:members,log:[],streak:0,best:0,
       chores:STARTERS.filter(function(t){return o.starters.indexOf(t)>-1}).map(function(t,i){
         return{id:uid(),title:t,who:members[i%members.length].id,due:addDays(today(),offsets[i%offsets.length]),repeat:7,rotate:true}})};
     save(); ui.tab='today'; window.scrollTo(0,0); render();
@@ -478,7 +561,7 @@ var A={
   'set-due':function(id){setField('due',id)},
   'set-repeat':function(id){setField('repeat',+id)},
   'set-rotate':function(){var t=target(); if(t)setField('rotate',!t.rotate)},
-  tick:function(id,e,el){if(el.classList.contains('doing'))return; el.classList.add('doing'); el.closest('.row').classList.add('leaving'); setTimeout(function(){complete(id)},420)},
+  tick:function(id,e,el){if(el.classList.contains('doing'))return; el.classList.add('doing'); fizz(el); el.closest('.row').classList.add('leaving'); setTimeout(function(){complete(id)},420)},
   done:function(id){complete(id)},
   handoff:function(){var s=ui.sheet; if(!s||!s.next)return;
     share(member(state.me).name+' just finished "'+s.title+'" at '+state.home+'. '+member(s.next).name+', you\'re up next ('+dueLabel(s.due).toLowerCase()+').',inviteLink())},
@@ -490,13 +573,13 @@ var A={
   'rm-member':function(id){var m=member(id); if(!window.confirm('Remove '+m.name+'? Their chores move to you.'))return;
     state.chores.forEach(function(c){if(c.who===id)c.who=state.me}); state.members=state.members.filter(function(x){return x.id!==id}); save(); render()},
   reset:function(){if(!window.confirm('Erase this house and all chores from this device? This cannot be undone.'))return;
-    try{localStorage.removeItem(KEY)}catch(e){} state=null; ui.step=-1; ui.tab='today'; ui.sheet=null; ui.onb=freshOnb(); window.scrollTo(0,0); render()}
+    try{localStorage.removeItem(KEY)}catch(e){} if(window.Cloud)window.Cloud.stop(); listening=null; state=null; ui.step=-1; ui.tab='today'; ui.sheet=null; ui.onb=freshOnb(); window.scrollTo(0,0); render()}
 };
 var F={
   onb0:function(d){ui.onb.home=clean(d.home,40); ui.onb.me=clean(d.me,24); if(ui.onb.home&&ui.onb.me){ui.step=1; render()}},
   mate:function(d){var n=clean(d.name,24); if(n&&ui.onb.mates.length<MAX-1)ui.onb.mates.push(n); render(); focus('[data-f=mate] input')},
   member:function(d){addMember(d.name)},
-  paste:function(d){var p=parseInvite(d.link); if(p){ui.joinErr=''; pending=p}else ui.joinErr='That doesn\'t look like a Tidy mate invite. Ask your housemate to send the link again.'; render()},
+  paste:function(d){var id=inviteId(d.link); if(id){ui.joinErr=''; joinFromId(id)}else{ui.joinErr='That doesn\'t look like a Tidy mate invite. Ask your housemate to send the link again.'; render()}},
   joinnew:function(d){var n=clean(d.name,24); if(!n||pending.members.length>=MAX)return; var m={id:uid(),name:n}; state=pending; state.members.push(m); state.me=m.id; finishJoin()},
   add:function(d){var t=clean(d.title,60); if(!t)return; var c=ui.draft; c.title=t; c.id=uid(); state.chores.push(c); save(); ui.sheet=null; ui.draft=null; render(); toast(t+' added')}
 };
@@ -522,12 +605,35 @@ document.addEventListener('change',function(e){
   else if(k==='title'&&ui.sheet&&ui.sheet.type==='chore'){var c=chore(ui.sheet.id),v=clean(e.target.value,60); if(c&&v){c.title=v;save()}}
 });
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ui.sheet){ui.sheet=null;render()}});
-window.addEventListener('hashchange',function(){var p=parseInvite(location.hash); if(p){pending=p;render()}});
+window.addEventListener('hashchange',function(){var id=inviteId(location.hash); if(id&&cloudReady&&!(state&&state.id===id))joinFromId(id)});
 
-pending=parseInvite(location.hash);
-if(pending&&state&&state.id===pending.id){pending=null;clearHash()}
+var inviteStart=inviteId(location.hash);
+if(inviteStart&&state&&state.id===inviteStart){inviteStart=null;clearHash()}
+function onCloud(){
+  cloudReady=true;
+  if(state&&state.id.length<20){state.id=houseId(); localSave()}   // houses made before sync existed
+  if(state)startListening();
+  if(inviteStart)joinFromId(inviteStart);
+}
+if(window.CloudReady)onCloud(); else window.addEventListener('cloud-ready',onCloud);
 render();
 })();
+</script>
+<script type="module">
+/* Firebase connection. The config below is meant to be public; the Firestore security rules (firebase/firestore.rules) protect the data. */
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import {getAuth,signInAnonymously} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import {getFirestore,doc,getDoc,setDoc,onSnapshot,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+const app=initializeApp({apiKey:"AIzaSyBhayhnK6LMHx42iLX6zUkyBBfTCdOK0qQ",authDomain:"tidymate-ce977.firebaseapp.com",projectId:"tidymate-ce977",storageBucket:"tidymate-ce977.firebasestorage.app",messagingSenderId:"593508604963",appId:"1:593508604963:web:2938e1063808563d0ca596"});
+const auth=getAuth(app), db=getFirestore(app), ready=signInAnonymously(auth);
+let unsub=null;
+window.Cloud={
+  get:async id=>{await ready; const s=await getDoc(doc(db,'houses',id)); return s.exists()?s.data():null},
+  push:async(id,d)=>{await ready; return setDoc(doc(db,'houses',id),{...d,updated:serverTimestamp()})},
+  listen:(id,cb)=>{ready.then(()=>{unsub&&unsub(); unsub=onSnapshot(doc(db,'houses',id),s=>{if(s.metadata.hasPendingWrites)return; cb(s.exists()?s.data():null)},e=>console.warn('sync',e.code))})},
+  stop:()=>{unsub&&unsub(); unsub=null}
+};
+ready.then(()=>{window.CloudReady=true; window.dispatchEvent(new Event('cloud-ready'))},e=>console.warn('Cloud sign-in failed',e.code));
 </script>
 </body>
 </html>

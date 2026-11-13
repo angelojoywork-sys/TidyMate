@@ -2,6 +2,22 @@
 
 Newest first. Each entry: what was decided, why, and what was rejected. These are the talking points for the case study.
 
+## 2026-11-13: Bubbles added to Option B; shared database planned before testing
+
+**Why:** owner liked B's sticker-press look and wanted A's bubbles in it. B now has the ambient drifting bubbles and a fizz of bubbles when a chore is ticked (still switched off for people who set "reduce motion").
+**Sync plan (proposed, not yet built):** Firebase Firestore, a hosted database that pushes changes to every phone live. Anonymous sign-in (no login screen, keeps "join by link and first name"). Each house is one document under an unguessable ID carried in the invite link. Runs from GitHub Pages with no build step.
+**Rejected:** Supabase (also good, but its free projects pause after a week of inactivity, which would break a test mid-way); keeping data in each phone (what we have now, nothing syncs); a custom server (more to run for no gain).
+**Trade-off:** anyone holding the link can edit that house. Fine for a friends test; revisit before public launch.
+
+## 2026-11-13: Option B built, "Sticker press", from Inspo references
+
+**What:** `design/option-b.html`, a copy of the live app with a style layer on top, added to the compare page. Buttons, chips and tick circles have a hard offset shadow and physically press down on tap (shadow collapses, element drops 3px). The streak pill and the "is done" heading become tilted yellow stickers with a dark edge. Cards get a dark outline and a solid shadow.
+**Why:** Mobbin was unavailable, so research used Inspo (inspomcp.dev), an archive of real website captures. Playful references (MoMoney, Analogue, Hey, Buttondown) share chunky offset shadows, sticker-like labels, big rounded type and one full-width action. Those became the cues. Option A is about ambient motion; B is about how touch feels, so the two are distinct to compare.
+**Limit to be honest about:** Inspo holds marketing websites, not in-app screens, so B borrows visual attitude, not app-flow patterns. It cannot tell us how chore apps handle handoffs. Mobbin would.
+**Guard rails:** nothing loops; press is 90ms; reduced motion switches transitions off. Colour and type unchanged so only feel differs. Dark outlines on cards are heavier than "calm first" may want, so that is the main thing to judge.
+**Rejected:** copying a site's layout (they are landing pages); adding new colours (yellow stickers are the only addition and would need to become a token if kept).
+**Open:** owner picks between current, A and B (or mixes: A's bubbles with B's press).
+
 ## 2026-11-13: Interaction explored as two options beside the live app
 
 **Why:** the owner likes the current onboarding and wants to compare alternatives before committing. Option A ("Living bubbles") and Option B (shaped by Mobbin references) are separate files in `design/`, so the live `index.html` is untouched. Both keep the blue palette and Bricolage type so only interaction differs, the same fair-comparison rule as the visual directions.
@@ -56,3 +72,10 @@ Newest first. Each entry: what was decided, why, and what was rejected. These ar
 ## 2026-11-11: A house holds up to four people
 
 **Why:** matches the first test house and keeps layouts simple for now. Revisit after testing.
+
+## 2026-11-13: Live sync with Firebase (Firestore + anonymous sign-in)
+
+**What:** each house is one Firestore document keyed by a 20-character random code. Phones sign in anonymously (no passwords). The invite link is `#house=<code>`. Which member you are ("me") stays on your own device.
+**Why:** free tier, live updates between phones, works with a plain HTML site (no build step), and the owner wanted a public link for testing.
+**Rejected:** Supabase (more setup for no gain at this size); keeping the whole house inside the URL (phones never stayed in step).
+**Trade-offs:** the last phone to save wins if two people edit within a second, which is fine for four housemates. Anyone holding the code can edit that house. Rules are in `firebase/firestore.rules`.

@@ -1,0 +1,19 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // One document per house. The house code (20 random characters) is the key:
+    // you can open a house only by knowing its code. Nobody can list houses or delete them.
+    match /houses/{houseId} {
+      allow get: if request.auth != null && houseId.size() >= 20;
+      allow list: if false;
+      allow delete: if false;
+      allow create, update: if request.auth != null
+        && houseId.size() >= 20
+        && request.resource.data.keys().hasOnly(['home','members','chores','log','streak','best','updated'])
+        && request.resource.data.home is string && request.resource.data.home.size() <= 40
+        && request.resource.data.members is list && request.resource.data.members.size() >= 1 && request.resource.data.members.size() <= 4
+        && request.resource.data.chores is list && request.resource.data.chores.size() <= 60
+        && request.resource.data.log is list && request.resource.data.log.size() <= 100;
+    }
+  }
+}
