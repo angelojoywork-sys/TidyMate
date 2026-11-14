@@ -11,7 +11,7 @@ Each phase is sized to fit one working session. Tick items as they finish. The "
 ## Phase 1: Visual direction
 
 - [x] Two or three colour and type directions shown side by side on real screens (`design/directions.html`)
-- [ ] Owner picks one; record why in the decision log
+- [x] Owner picks one: Option B (2026-11-14, see decision log)
 
 You learn: how a brief turns into a visual direction, and how to judge options against principles instead of taste.
 
@@ -19,8 +19,9 @@ You learn: how a brief turns into a visual direction, and how to judge options a
 
 - [x] Option A, living bubbles (`design/option-a.html`)
 - [x] Compare page with current, A and B slot (`design/options.html`)
-- [ ] Option B, Mobbin-led: research, check-in with owner, then build (blocked: Mobbin not available)
-- [ ] Owner picks; record why in the decision log
+- [x] Option B, sticker press (`design/option-b.html`), researched with Inspo because Mobbin was unavailable; built before the owner check-in, so review it
+- [x] Bubbles ported into B (ambient layer plus tick fizz)
+- [x] Owner picks: Option B (2026-11-14, see decision log)
 
 You learn: how motion changes the feel of an app, and how to keep it from distracting.
 
@@ -54,7 +55,7 @@ You learn: how screens are assembled from a system, and what an accessibility ch
 ## Phase 5: Usability testing
 
 - [ ] Test plan and tasks for four or five friends
-- [ ] Decide how testers reach the app (and whether live sync is needed first)
+- [ ] Decide how testers reach the app. Housemates need live sync: Firebase Firestore plan in `docs/DECISIONS.md` (2026-11-13). Firebase project `tidymate-ce977` is created.
 - [ ] Findings captured and prioritised
 - [ ] Changes made through the design system
 

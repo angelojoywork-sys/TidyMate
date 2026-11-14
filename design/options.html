@@ -42,14 +42,14 @@ body{background:#F2F2F4;color:#1B1B21;font:16px/1.5 -apple-system,BlinkMacSystem
     <div class="phone"><iframe src="option-a.html" title="Option A" loading="lazy"></iframe></div>
   </div>
   <div class="opt">
-    <h2>B: Mobbin-led<span class="tag">in progress</span></h2>
-    <p>Shaped by real app references. Waiting on research and a check-in before it is built.</p>
-    <div class="phone todo">Not built yet</div>
+    <h2>B: Sticker press<span class="tag">ready</span></h2>
+    <p>Shaped by Inspo references. Chunky shadows that press in on tap, sticker labels, ticking a chore feels like pressing a button. No looping motion.</p>
+    <div class="phone"><iframe src="option-b.html" title="Option B" loading="lazy"></iframe></div>
   </div>
 </section>
-<p class="reset"><button id="r">Reset test data for Option A</button></p>
+<p class="reset"><button id="r">Reset test data for Options A and B</button></p>
 <script>
-document.getElementById('r').onclick=function(){try{localStorage.removeItem('tidymate.optA')}catch(e){}document.querySelector('iframe[title="Option A"]').contentWindow.location.reload()};
+document.getElementById('r').onclick=function(){try{localStorage.removeItem('tidymate.optA');localStorage.removeItem('tidymate.optB')}catch(e){}document.querySelectorAll('iframe').forEach(function(f){f.contentWindow.location.reload()})};
 </script>
 </body>
 </html>

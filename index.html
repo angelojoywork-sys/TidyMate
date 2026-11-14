@@ -623,9 +623,9 @@ render();
 /* Firebase connection. The config below is meant to be public; the Firestore security rules (firebase/firestore.rules) protect the data. */
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import {getAuth,signInAnonymously} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import {getFirestore,doc,getDoc,setDoc,onSnapshot,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import {initializeFirestore,doc,getDoc,setDoc,onSnapshot,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 const app=initializeApp({apiKey:"AIzaSyBhayhnK6LMHx42iLX6zUkyBBfTCdOK0qQ",authDomain:"tidymate-ce977.firebaseapp.com",projectId:"tidymate-ce977",storageBucket:"tidymate-ce977.firebasestorage.app",messagingSenderId:"593508604963",appId:"1:593508604963:web:2938e1063808563d0ca596"});
-const auth=getAuth(app), db=getFirestore(app), ready=signInAnonymously(auth);
+const auth=getAuth(app), db=initializeFirestore(app,{experimentalAutoDetectLongPolling:true}), ready=signInAnonymously(auth);
 let unsub=null;
 window.Cloud={
   get:async id=>{await ready; const s=await getDoc(doc(db,'houses',id)); return s.exists()?s.data():null},

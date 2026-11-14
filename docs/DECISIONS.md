@@ -79,3 +79,9 @@ Newest first. Each entry: what was decided, why, and what was rejected. These ar
 **Why:** free tier, live updates between phones, works with a plain HTML site (no build step), and the owner wanted a public link for testing.
 **Rejected:** Supabase (more setup for no gain at this size); keeping the whole house inside the URL (phones never stayed in step).
 **Trade-offs:** the last phone to save wins if two people edit within a second, which is fine for four housemates. Anyone holding the code can edit that house. Rules are in `firebase/firestore.rules`.
+
+## 2026-11-14: Visual and interaction direction: Option B, sticker press
+
+**What:** Option B (`design/option-b.html`) is the direction for the app. It is already shipped as `index.html`, with the ambient bubble layer and tick fizz ported in from Option A.
+**Why:** the owner chose it after reviewing it live. It gives chores a tactile, rewarding press without making the app feel like a game, which fits the principle "a house, not a competition".
+**Rejected:** the previous look (current prototype), and Option A (living bubbles) as the main style. Its bubbles live on inside B as a light ambient layer.
