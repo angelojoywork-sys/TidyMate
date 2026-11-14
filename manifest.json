@@ -1,7 +1,7 @@
 {
   "name": "TidyMate",
   "short_name": "TidyMate",
-  "description": "Shared chores for housemates. No account, no download.",
+  "description": "Shared chores for housemates. Join with one tap. No download.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

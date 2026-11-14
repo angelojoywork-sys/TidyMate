@@ -54,3 +54,9 @@ Plain-language definitions of terms used in this project. Added to as new terms 
 
 **End-to-end (e2e) test:** an automated test that drives the real app like a person would, from tap to result.
 
+
+**Account linking:** upgrading a guest user to a Google sign-in without changing their user ID, so everything they own stays theirs.
+
+**Security rules:** the server-side checks in `firebase/firestore.rules` that decide who may read or write each document. The app code cannot bypass them.
+
+**Invite code:** a secret 20-character string in the invite link. Whoever has the current code can join the house; resetting it cancels the old link.

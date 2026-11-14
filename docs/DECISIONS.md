@@ -93,3 +93,17 @@ Newest first. Each entry: what was decided, why, and what was rejected. These ar
 **Rejected:** a bare spinner with no timeout (hangs forever on a bad connection); keeping the invite in sessionStorage (does not fix the silent failure).
 **Not yet confirmed:** the exact cause on the owner's phone. Check which app opened the link and whether the house was created before live sync. See `docs/FLOWS.md`.
 
+
+## 2026-11-14: Accounts (Google or guest), private houses, invite codes
+
+**What:** people sign in with Google or continue as a guest (Firebase anonymous user). A guest who later signs in with Google is upgraded in place (*account linking*), so the same user ID keeps their house. Each house now lists who may open it (`memberUids`) and has an `ownerUid`. Joining needs a secret invite code (`#join=<code>`) stored in `invites/{code}`; the owner can reset it. A `users/{uid}` document stores first name and which houses you are in, so a new phone opens your house after sign-in. Rules are in `firebase/firestore.rules`.
+**Why:** before this, anyone holding a house code could read and edit it, and there was no way to tell people apart. A sellable product needs identity, private data and revocable sharing. Keeping guests matters because Google blocks sign-in inside some chat-app browsers.
+**Rejected:** Google-only (shuts out in-app browsers); email and password (more friction, more to secure); putting the house ID in the link as the secret (cannot be revoked).
+**Trade-offs:** joining is two steps (a rules-checked write adds your ID, then you pick your name) because a non-member cannot read the house. An abandoned join leaves an unused slot until the owner resets the invite link, which clears them. The last writer still wins on edits. Existing test houses were migrated: local data is kept and gets a new ID, old `#house=` links stop working.
+**Tension with the brief:** principle 5 changed from "nothing to sign up for" to "joining is one tap". The privacy card now says Google sign-in shares name and email.
+**Not yet verified:** the security rules have not been run against the Firebase emulator (no Java on this machine) or deployed.
+
+## 2026-11-14: Hosting stays on GitHub Pages until the first Firebase deploy
+
+**What:** `firebase.json` and `.firebaserc` are in place for Firebase Hosting (`tidymate-ce977.web.app`). Deploy is manual (`npx firebase-tools deploy`). No redirect from GitHub Pages yet.
+**Why:** a redirect before the new site exists would break the live link. A GitHub Action deploy needs a service-account secret; not worth it yet.

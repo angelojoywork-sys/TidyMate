@@ -63,6 +63,15 @@ You learn: how screens are assembled from a system, and what an accessibility ch
 
 You learn: how to plan and run a small usability test and turn findings into changes.
 
+## Phase 5b: Accounts and public launch (plan: `docs/PLAN-google-signin.md`)
+
+- [x] A. Hosting config written (`firebase.json`); first deploy needs the owner
+- [x] B. Google and guest sign-in, account linking, private houses, invite codes, new rules, leave/delete/reset (code done, tested only with a fake backend)
+- [ ] B. Owner steps: enable Google sign-in, deploy rules, add authorised domain, then push (see the end-of-session notes)
+- [ ] B. Run the rules against the Firebase emulator (needs Java)
+- [ ] C. Onboarding and invite visuals, in-app-browser warning, house switcher, member photos
+- [ ] D. PWA  - [ ] E. Push nudges (needs Blaze plan)  - [ ] F. Launch hardening
+
 ## Phase 6: Case study
 
 - [ ] Competitor review with sources

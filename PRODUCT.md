@@ -4,7 +4,7 @@ The source of truth for what this product is and who it serves. Design and code 
 
 ## One line
 
-Track the chores, spare the drama: a shared chore tracker for people who live together, with no account and no download.
+Track the chores, spare the drama: a shared chore tracker for people who live together, with one-tap sign-in and no download.
 
 ## Who it is for
 
@@ -29,7 +29,7 @@ The gap is communication, not motivation. People are willing; they just don't kn
 2. **One tap to log.** If logging takes effort, people stop, and the record stops being trusted.
 3. **A house, not a competition.** Show shared progress. No ranking, no shaming, no points against each other.
 4. **Calm first, playful second.** Quiet, clear screens; personality shows up in small moments (finishing a chore, the mascot, the copy), never in the way of the task.
-5. **Nothing to sign up for.** Joining is a link and a first name.
+5. **Joining is one tap.** A link, then Google or just a first name as a guest. No forms, no passwords.
 
 ## Voice
 
