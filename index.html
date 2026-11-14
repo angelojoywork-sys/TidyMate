@@ -240,7 +240,7 @@ var STARTERS=['Vacuum the house','Clean washroom','Clean fridge','Take out bins'
 var REPEATS=[[0,'Once'],[7,'Weekly'],[14,'Every 2 weeks'],[30,'Monthly']];
 var $app=document.getElementById('app'), $toast=document.getElementById('toast');
 var state=load(), pending=null, undoSnap=null, toastTimer=null;
-var ui={tab:'today',filter:'all',sheet:null,step:-1,draft:null,joinErr:'',onb:freshOnb()};
+var ui={tab:'today',filter:'all',sheet:null,step:-1,draft:null,joinErr:'',joining:false,onb:freshOnb()};
 function freshOnb(){return{home:'House',me:'',mates:[],starters:STARTERS.slice(0,3)}}
 
 /* ---------- icons (one stroke weight, drawn for this app) ---------- */
@@ -336,8 +336,9 @@ function fromDoc(id,o){
 function inviteLink(){return location.origin+location.pathname+'#house='+state.id}
 function inviteId(text){var m=/#house=([a-z0-9]{20})/.exec(String(text)); return m?m[1]:null}
 function joinFromId(id){
-  return window.Cloud.get(id).then(function(d){
-    var p=fromDoc(id,d); if(p){pending=p; ui.joinErr=''} else {pending=null; ui.joinErr='We couldn\'t find that house. Ask your housemate to send the link again.'}
+  var slow=new Promise(function(_,no){setTimeout(function(){no(new Error('timeout'))},12000)});  // a hung lookup must end in a message, not a spinner
+  return Promise.race([window.Cloud.get(id),slow]).then(function(d){
+    var p=fromDoc(id,d); if(p){pending=p; ui.joinErr=''; ui.joining=false} else {pending=null; ui.joinErr='We couldn\'t find that house. Ask your housemate to send the link again.'}
     render();
   },function(){ui.joinErr='Couldn\'t reach the house. Check your connection and try again.'; render()});
 }
@@ -375,6 +376,7 @@ function fizz(el){
 function render(){
   var html, bare=true;
   if(pending)html=viewJoin();
+  else if(!state&&ui.joining)html=viewJoining();
   else if(!state)html=ui.step===-1?viewWelcome():ui.step===-2?viewPaste():viewOnboard();
   else{bare=false; html=(ui.tab==='today'?viewToday():ui.tab==='log'?viewLog():viewHome())+navBar()+(ui.sheet?viewSheet():'')}
   $app.className=bare?'bare':'';
@@ -385,6 +387,12 @@ function viewWelcome(){
   return '<section class="welcome"><h1>Tidy mate</h1><p class="tagline">Track the chores, spare the drama!</p>'+
     '<figure aria-hidden="true"></figure>'+
     '<div class="stack"><button class="btn" data-a="step" data-id="0">Get started</button><button class="btn line" data-a="step" data-id="-2">Join house</button></div></section>';
+}
+function viewJoining(){
+  var err=ui.joinErr;
+  return bar()+'<section class="onb"><h1>'+(err?'Can\'t open the house':'Opening your house\u2026')+'</h1>'+
+    (err?'<p class="err" role="alert">'+esc(err)+'</p><div class="stack" style="margin-top:20px"><button class="btn" data-a="retry-join">Try again</button><button class="btn line" data-a="step" data-id="-1">Start over</button></div>'
+        :'<p class="sub" role="status">One moment while we find it.</p>')+'</section>';
 }
 function viewPaste(){
   return bar()+'<section class="onb"><button class="back" data-a="step" data-id="-1">'+icon('back')+'Back</button>'+
@@ -537,7 +545,8 @@ function addMember(name){name=clean(name,24); if(!name)return;
 var A={
   tab:function(id){ui.tab=id;window.scrollTo(0,0);render()},
   filter:function(id){ui.filter=id;render()},
-  step:function(id){ui.step=+id;ui.joinErr='';window.scrollTo(0,0);render()},
+  'retry-join':function(){var id=inviteId(location.hash)||inviteStart; if(!id){ui.joining=false;render();return} ui.joinErr=''; render(); if(cloudReady)joinFromId(id); else waitCloud()},
+  step:function(id){ui.step=+id;ui.joinErr='';ui.joining=false;window.scrollTo(0,0);render()},
   'rm-mate':function(id){ui.onb.mates.splice(+id,1);render()},
   starter:function(id){var s=ui.onb.starters,i=s.indexOf(id); if(i>-1)s.splice(i,1); else s.push(id); render()},
   create:function(){
@@ -550,7 +559,7 @@ var A={
     if(members.length===1)toast('House created. Invite housemates from the House tab.');
   },
   join:function(id){state=pending; state.me=id; finishJoin()},
-  'dismiss-join':function(){pending=null; clearHash(); render()},
+  'dismiss-join':function(){pending=null; ui.joining=false; clearHash(); render()},
   add:function(){ui.draft={title:'',who:state.me,due:today(),repeat:0,rotate:true}; ui.sheet={type:'add'}; render()},
   open:function(id){ui.sheet={type:'chore',id:id}; render()},
   invite:function(){ui.sheet={type:'invite'}; render()},
@@ -607,14 +616,20 @@ document.addEventListener('change',function(e){
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ui.sheet){ui.sheet=null;render()}});
 window.addEventListener('hashchange',function(){var id=inviteId(location.hash); if(id&&cloudReady&&!(state&&state.id===id))joinFromId(id)});
 
-var inviteStart=inviteId(location.hash);
+var inviteStart=inviteId(location.hash), cloudTimer=null;
 if(inviteStart&&state&&state.id===inviteStart){inviteStart=null;clearHash()}
+function waitCloud(){  // a slow or blocked connection (e.g. a chat app's in-app browser) must not leave a blank wait
+  clearTimeout(cloudTimer);
+  cloudTimer=setTimeout(function(){if(!cloudReady&&ui.joining&&!state&&!pending){ui.joinErr='Couldn\'t reach the house. Check your connection and try again.'; render()}},10000);
+}
+window.addEventListener('cloud-failed',function(){if(ui.joining&&!state&&!pending){ui.joinErr='Couldn\'t reach the house. Check your connection and try again.'; render()}});
 function onCloud(){
-  cloudReady=true;
+  cloudReady=true; clearTimeout(cloudTimer);
   if(state&&state.id.length<20){state.id=houseId(); localSave()}   // houses made before sync existed
   if(state)startListening();
   if(inviteStart)joinFromId(inviteStart);
 }
+if(inviteStart&&!state){ui.joining=true; waitCloud()}
 if(window.CloudReady)onCloud(); else window.addEventListener('cloud-ready',onCloud);
 render();
 })();
@@ -633,7 +648,7 @@ window.Cloud={
   listen:(id,cb)=>{ready.then(()=>{unsub&&unsub(); unsub=onSnapshot(doc(db,'houses',id),s=>{if(s.metadata.hasPendingWrites)return; cb(s.exists()?s.data():null)},e=>console.warn('sync',e.code))})},
   stop:()=>{unsub&&unsub(); unsub=null}
 };
-ready.then(()=>{window.CloudReady=true; window.dispatchEvent(new Event('cloud-ready'))},e=>console.warn('Cloud sign-in failed',e.code));
+ready.then(()=>{window.CloudReady=true; window.dispatchEvent(new Event('cloud-ready'))},e=>{console.warn('Cloud sign-in failed',e.code); window.CloudFailed=true; window.dispatchEvent(new Event('cloud-failed'))});
 </script>
 </body>
 </html>

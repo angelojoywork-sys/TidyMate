@@ -54,6 +54,8 @@ You learn: how screens are assembled from a system, and what an accessibility ch
 
 ## Phase 5: Usability testing
 
+- [x] User flows and phone smoke checklist (`docs/FLOWS.md`); invite-link failure states fixed
+- [ ] Automated e2e tests (Playwright, needs owner OK to add dev tooling)
 - [ ] Test plan and tasks for four or five friends
 - [ ] Decide how testers reach the app. Housemates need live sync: Firebase Firestore plan in `docs/DECISIONS.md` (2026-11-13). Firebase project `tidymate-ce977` is created.
 - [ ] Findings captured and prioritised

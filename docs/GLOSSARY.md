@@ -47,3 +47,10 @@ Plain-language definitions of terms used in this project. Added to as new terms 
 **Easing:** the speed curve of an animation. "Ease out" starts fast and settles gently, which feels natural for things appearing. Ours is named `--out`.
 
 **Reduced motion:** a phone setting for people who find movement uncomfortable. Our animations switch off or become static when it is on.
+
+**User flow:** the path a person takes to finish one goal, written as steps with what can go wrong. See `docs/FLOWS.md`.
+
+**Smoke test:** a short check, run after each release, that the most important things still work.
+
+**End-to-end (e2e) test:** an automated test that drives the real app like a person would, from tap to result.
+

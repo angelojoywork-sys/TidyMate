@@ -85,3 +85,11 @@ Newest first. Each entry: what was decided, why, and what was rejected. These ar
 **What:** Option B (`design/option-b.html`) is the direction for the app. It is already shipped as `index.html`, with the ambient bubble layer and tick fizz ported in from Option A.
 **Why:** the owner chose it after reviewing it live. It gives chores a tactile, rewarding press without making the app feel like a game, which fits the principle "a house, not a competition".
 **Rejected:** the previous look (current prototype), and Option A (living bubbles) as the main style. Its bubbles live on inside B as a light ambient layer.
+
+## 2026-11-14: Invite links show an "Opening your house" state and visible errors
+
+**What:** tapping an invite link on a phone with no house now shows "Opening your house…" instead of Welcome. If sign-in fails, the lookup hangs (12 s) or the house is missing, the same screen shows a message with Try again and Start over.
+**Why:** a housemate tapped a link and saw onboarding with no explanation. The code only displayed join errors on the paste screen, and Welcome drew before the cloud connection was ready.
+**Rejected:** a bare spinner with no timeout (hangs forever on a bad connection); keeping the invite in sessionStorage (does not fix the silent failure).
+**Not yet confirmed:** the exact cause on the owner's phone. Check which app opened the link and whether the house was created before live sync. See `docs/FLOWS.md`.
+
