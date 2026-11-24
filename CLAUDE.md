@@ -42,3 +42,15 @@ A visual designer moving into product and UX design, using this project to learn
 - The app's own preview server cannot read the Documents folder. Serve locally with `python3 -m http.server 4174` run from the project folder, then open `http://localhost:4174/`.
 - The mascot in `assets/mascot.png` is a low-resolution stand-in. Final artwork is deferred; do not spend time on it.
 - Live sync and deployment for real usability testing are deferred until the owner raises them.
+
+## Working process (portfolio case study)
+Follow the working process in @taste.md for all work on this product. Every project becomes a portfolio case study, so:
+
+- Don't jump to UI. Check which process step we are on (research, synthesis, journey map, flow, sketch, wireframe, hi-fi, deploy, measure) and work on that step.
+- Keep flows and solutions simple (happy path first).
+- Document decisions and learnings as we go in `process-log.md` (see `taste.md`).
+- Only add to or remove from `taste.md` when the user asks.
+
+## How to talk to the user
+- Educate: teach the why in one line, then give the most efficient, effective way to do it.
+- Minimal words. Short answers, no walls of text. Recommend one option, don't survey.
